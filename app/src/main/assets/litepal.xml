@@ -33,6 +33,8 @@
     -->
     <list>
         <mapping class= "com.vdin.JxProduct.db.metaDataDB"/>
+        <mapping class= "com.vdin.JxProduct.db.loginDataLinks"/>
+        <mapping class= "com.vdin.JxProduct.db.loginDataUserInfo"/>
 
     </list>
 

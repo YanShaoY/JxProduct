@@ -7,8 +7,6 @@ import android.util.Log;
 
 import java.io.IOException;
 
-import javax.security.auth.callback.Callback;
-
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -22,6 +20,7 @@ public class LaunchUtil {
 
     //是否是第一次启动
     public static boolean isFirstLaunch(Context context) {
+
         String flag = PrefsManager.getPrefs(context, IS_FIRST_LAUNCH);
         //这里还要判断 preference保存的版本号是否和 manifest 里面保存的相同,不相同说明安装了
         //新版本的 APP,同样需要显示引导页
@@ -121,8 +120,7 @@ public class LaunchUtil {
     }
 
     //获取服务器版本号
-    public static void getVersionForService(final VersionForServiceCallBack callBack)
-    {
+    public static void getVersionForService(VersionForServiceCallBack callBack) {
         //待实现, 不清楚服务器接口
         HttpUtil.getRequest("url", new okhttp3.Callback() {
             @Override
@@ -137,4 +135,10 @@ public class LaunchUtil {
             }
         });
     }
+
+    public interface VersionForServiceCallBack {
+
+        void version(String v);
+    }
 }
+

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.vdin.JxProduct.API.MetaDataAPI;
 import com.vdin.JxProduct.Activity.BaseActivity;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Util.MetaDataUtility;
@@ -39,8 +40,7 @@ public class HomeActivity extends BaseActivity {
 
                 break;
             case R.id.btn_login:
-                // 启动时请求元数据
-                MetaDataUtility.getInstance().requestMetaDataSource();
+                MetaDataUtility.requestMetaDataSource();
                 Intent mIntent = new Intent(HomeActivity.this,
                         LoginActivity.class);
                 startActivity(mIntent);

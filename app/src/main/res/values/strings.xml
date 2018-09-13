@@ -3,6 +3,11 @@
     <string name="title_activity_base">BaseActivity</string>
 
     <!--URL接口-->
-    <string name="metadata_url">http://192.168.0.226/picasso-wan/practitioner-api/v1/portals.json</string>
+    <string name="metadata_url">http://192.168.0.234/picasso-wan/practitioner-api/v1/portals.json</string>
+    <!--<string name="metadata_url">http://192.168.0.226/picasso-wan/practitioner-api/v1/portals.json</string>-->
+
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 
 </resources>

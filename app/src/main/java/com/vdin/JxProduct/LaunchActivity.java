@@ -1,14 +1,16 @@
 package com.vdin.JxProduct;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.vdin.JxProduct.Activity.GuideActivity;
 import com.vdin.JxProduct.Activity.HomeActivity;
+import com.vdin.JxProduct.Activity.MainActivity;
 import com.vdin.JxProduct.Util.LaunchUtil;
+import com.vdin.JxProduct.Util.MetaDataUtility;
 
 public class LaunchActivity extends AppCompatActivity {
     @Override
@@ -19,31 +21,45 @@ public class LaunchActivity extends AppCompatActivity {
         //加载启动界面
         setContentView(R.layout.activity_launch);
 
-        // 判断是否第一次启动
-        if (LaunchUtil.isFirstLaunch(this)){
+        //设置等待时间，单位为毫秒
+        Integer time = 1500;
 
-            LaunchUtil.setFirshLaunchFlag(this);
-            //设置等待时间，单位为毫秒
-            Integer time = 1500;
+            // 当计时结束时，跳转
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
 
-            Handler handler = new Handler();
-            //当计时结束时，跳转至引导页
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(LaunchActivity.this, GuideActivity.class);
-                    int[] imageIdArray = new int[]{R.mipmap.p1, R.mipmap.p2, R.mipmap.p3};
-                    intent.putExtra("imageIdArray",imageIdArray);
+            // 判断是否第一次启动
+            if (LaunchUtil.isFirstLaunch(this)) {
+
+                LaunchUtil.setFirshLaunchFlag(this);
+
+                Intent intent = new Intent(this, GuideActivity.class);
+                int[] imageIdArray = new int[]{R.mipmap.p1, R.mipmap.p2, R.mipmap.p3};
+                intent.putExtra("imageIdArray", imageIdArray);
+                startActivity(intent);
+                finish();
+
+            } else {
+                //判断是否已经登录
+                if (LaunchUtil.isLogin(this)) {
+                    // 跳转主界面
+                    Intent mIntent = new Intent(LaunchActivity.this, MainActivity.class);
+                    startActivity(mIntent);
+                    finish();
+
+                } else {
+                    //进入 home界面
+                    Intent intent = new Intent(this, HomeActivity.class);
                     startActivity(intent);
+                    finish();
                 }
-            }, time);
+            }
+        }, time);
 
-        }else {
-            Intent intent = new Intent(LaunchActivity.this, HomeActivity.class);
-            startActivity(intent);
-        }
+        //获取元数据
+        MetaDataUtility.requestMetaDataSource();
 
-        LaunchActivity.this.finish();
+
     }
 
 }

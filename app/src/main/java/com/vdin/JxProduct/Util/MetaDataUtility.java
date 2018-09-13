@@ -1,9 +1,7 @@
 package com.vdin.JxProduct.Util;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.vdin.JxProduct.App.MainApplication;
@@ -16,7 +14,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,23 +31,14 @@ import okhttp3.Response;
 public class MetaDataUtility {
 
     /**
-     * 构造单例
-     * @return 返回本类实例
-     */
-    public static MetaDataUtility getInstance(){
-        return MetaDataUtilityHolder.instance;
-    }
-
-    private MetaDataUtility(){};
-
-    private static class MetaDataUtilityHolder {
-        private static final MetaDataUtility instance = new MetaDataUtility();
-    }
-
-    /**
      * 请求元数据
      */
-    public void requestMetaDataSource() {
+    public static void requestMetaDataSource() {
+
+        MetaDataResponse metaDataFile = MetaDataUtility.getMetaDataFile();
+        if (metaDataFile != null && metaDataFile.isSuccess()){
+            return;
+        }
 
         String URLStr = MainApplication.getContext().getString(R.string.metadata_url);
 
@@ -68,8 +56,10 @@ public class MetaDataUtility {
                     try {
                         JSONObject jsonObject = new JSONObject(responseText);
                         String metaDataStr = jsonObject.toString();
-                        saveMetaDataFile(metaDataStr);
-
+                        MetaDataResponse metaDataResponse = new Gson().fromJson(metaDataStr, MetaDataResponse.class);
+                        if (metaDataResponse.isSuccess()) {
+                            saveMetaDataFile(metaDataStr);
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -82,10 +72,11 @@ public class MetaDataUtility {
 
     /**
      * 存储元数据
+     *
      * @param metaDataStr 元数据信息
      * @return
      */
-    private Boolean saveMetaDataFile(String metaDataStr){
+    private static Boolean saveMetaDataFile(String metaDataStr) {
 
         FileOutputStream fileOutputStream = null;
         BufferedWriter writer = null;
@@ -95,10 +86,10 @@ public class MetaDataUtility {
             writer.write(metaDataStr);
             return true;
 
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (writer != null){
+            if (writer != null) {
                 try {
                     writer.close();
                 } catch (IOException e) {
@@ -112,9 +103,10 @@ public class MetaDataUtility {
 
     /**
      * 获取元数据
+     *
      * @return 返回元数据信息
      */
-    private MetaDataResponse getMetaDataFile(){
+    public static MetaDataResponse getMetaDataFile() {
 
         FileInputStream inputStream = null;
         BufferedReader reader = null;
@@ -124,13 +116,13 @@ public class MetaDataUtility {
             inputStream = MainApplication.getContext().openFileInput("metaData");
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String line = "";
-            while ((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 content.append(line);
             }
 
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             if (reader != null) {
                 try {
                     reader.close();
@@ -145,11 +137,9 @@ public class MetaDataUtility {
                 JSONObject jsonObject = new JSONObject(content.toString());
                 String metaDataStr = jsonObject.toString();
                 MetaDataResponse metaDataResponse = new Gson().fromJson(metaDataStr, MetaDataResponse.class);
-                if (metaDataResponse.isSuccess()){
-                    metaDataResponse.getCollection().get(0);
+                if (metaDataResponse.isSuccess()) {
+                    return metaDataResponse;
                 }
-
-                return metaDataResponse;
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -158,9 +148,6 @@ public class MetaDataUtility {
 
         return null;
     }
-
-
-
 
 }
 

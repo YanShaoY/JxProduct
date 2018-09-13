@@ -1,5 +1,9 @@
 package com.vdin.JxProduct.Util;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.google.gson.Gson;
 
 import java.util.Iterator;
@@ -12,6 +16,24 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 
 public class HttpUtil {
+
+    /**
+     * 网络状态判断
+     * @param context 上下文
+     * @return 网络状态
+     */
+    public static boolean isNetworkConnected(Context context){
+        if (context != null) {
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+            if (mNetworkInfo != null) {
+                return mNetworkInfo.isAvailable();
+            }
+        }
+        return false;
+    }
+
     //get 请求
     public static void getRequest(String url, okhttp3.Callback callback) {
         Request request = new Request.Builder().url(url).build();

@@ -4,31 +4,28 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.vdin.JxProduct.R;
 
 public class BaseActivity extends AppCompatActivity {
 
     // 进度框
     private ProgressDialog progressDialog;
+    // 上下文
     public Context mContext;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
     }
-
 
     View.OnClickListener headeronclick = new View.OnClickListener() {
         public void onClick(View v) {
@@ -42,13 +39,7 @@ public class BaseActivity extends AppCompatActivity {
      * @param message 弹窗内容
      */
     public void showToastWithMessage(final String message) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                closeProgressDialog();
-                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-            }
-        });
+        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -68,12 +59,11 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * 关闭进度对话框
      */
-    private void closeProgressDialog() {
+    public void closeProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
     }
-
 
     /**
      * 通过设置全屏，设置状态栏透明

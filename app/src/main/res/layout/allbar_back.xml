@@ -28,6 +28,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:textColor="@color/ty_navbar"
-        android:textSize="@dimen/ty_navbar_sb" />
+        android:textColor="#ffffff"
+        android:textSize="18sp" />
 </RelativeLayout>

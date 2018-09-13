@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.vdin.JxProduct">
+
+    <!-- 权限设置列表 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".App.MainApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/logo"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/logo"
+        android:supportsRtl="true"
+        android:theme="@style/TranslucentTheme">
+        <activity android:name=".LaunchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Activity.GuideActivity" />
+        <activity android:name=".Activity.HomeActivity" />
+        <activity
+            android:name=".Activity.BaseActivity"
+            android:label="@string/title_activity_base"
+            android:theme="@style/TranslucentTheme" />
+        <activity android:name=".Activity.LoginActivity"></activity>
+    </application>
+
+</manifest>

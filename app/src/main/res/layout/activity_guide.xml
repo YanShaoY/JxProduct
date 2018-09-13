@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activity.GuideActivity">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/guide_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+    <LinearLayout
+        android:id="@+id/guide_ll_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="36dp"
+        android:orientation="horizontal">
+
+        <!--<ImageView-->
+            <!--android:layout_width="16dp"-->
+            <!--android:layout_height="8dp"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_marginRight="8dp"-->
+            <!--android:clickable="true"-->
+            <!--android:scaleType="centerInside" />-->
+
+        <!--<ImageView-->
+            <!--android:layout_width="16dp"-->
+            <!--android:layout_height="8dp"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_marginRight="8dp"-->
+            <!--android:clickable="true"-->
+            <!--android:scaleType="centerInside" />-->
+
+        <!--<ImageView-->
+            <!--android:layout_width="16dp"-->
+            <!--android:layout_height="8dp"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:clickable="true"-->
+            <!--android:scaleType="centerInside" />-->
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/guide_ib_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/guide_ll_point"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:background="@android:color/holo_red_light"
+        android:text="立即体验"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+</RelativeLayout>

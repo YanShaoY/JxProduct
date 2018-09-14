@@ -4,8 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Activity.BaseActivity"
-    tools:showIn="@layout/activity_base">
+    tools:context=".Activity.IdCardReadActivity">
+
+    <include layout="@layout/base_nav_bar"/>
+
+
+
 
 </android.support.constraint.ConstraintLayout>

@@ -9,11 +9,17 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.vdin.JxProduct.R;
+import com.vdin.JxProduct.Util.ToolUtil;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -22,16 +28,55 @@ public class BaseActivity extends AppCompatActivity {
     // 上下文
     public Context mContext;
 
+    /**
+     * 视图创建时调用
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
     }
 
+    /**
+     * 设置导航栏标题
+     * @param title 导航栏的标题
+     */
+    protected void setHeaderTitle(String title) {
+        View view = findViewById(R.id.mainheader_title);
+        view.setVisibility(View.VISIBLE);
+        if (view instanceof TextView) {
+            ((TextView) view).setText(title);
+        }
+    }
+
+    /**
+     * 设置返回按钮
+     * @param btTitle
+     */
+    protected void setHeaderleftTurnBack(String btTitle) {
+        View view = findViewById(R.id.mainheader_leftimg);
+        view.setVisibility(View.VISIBLE);
+        if (view instanceof Button) {
+            ((Button) view).setText(btTitle);
+            view.setOnClickListener(headeronclick);
+        }
+    }
+
+    // 返回按钮点击响应事件
     View.OnClickListener headeronclick = new View.OnClickListener() {
         public void onClick(View v) {
             finish();
         }
     };
+
+    // 设置返回按钮文字大小
+    protected void setHeaderleftTurnBackWZ(int sp) {
+        View view = findViewById(R.id.mainheader_leftimg);
+        view.setVisibility(View.VISIBLE);
+        if (view instanceof Button) {
+            ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_SP,sp);
+        }
+    }
 
     /**
      * 显示底部弹窗
@@ -102,7 +147,7 @@ public class BaseActivity extends AppCompatActivity {
      * @param activity
      * @param value
      */
-    public static void setFitsSystemWindows(Activity activity, boolean value) {
+    public void setFitsSystemWindows(Activity activity, boolean value) {
         ViewGroup contentFrameLayout = (ViewGroup) activity.findViewById(android.R.id.content);
         View parentView = contentFrameLayout.getChildAt(0);
         if (parentView != null && Build.VERSION.SDK_INT >= 14) {
@@ -139,4 +184,29 @@ public class BaseActivity extends AppCompatActivity {
         contentView.addView(statusBarView, lp);
     }
 
+    /**
+     * dp转px
+     *
+     * @param dpValue dp
+     * @return
+     */
+    public int dp2px(float dpValue) {
+        return ToolUtil.dp2px(this,dpValue);
+    }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

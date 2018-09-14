@@ -211,6 +211,14 @@ public class LoginActivity extends BaseActivity {
                             JumpToMainActivity();
                             // 跑路
                             return;
+                        }else {
+                            // 关闭提示进度窗
+                            closeProgressDialog();
+                            
+                            String msg = loginDataResponse.getMessage();
+                            msg = msg.length() > 0 ? msg : "网络错误" ;
+                            showToastWithMessage(msg);
+                            return;
                         }
 
                     } catch (JSONException e) {

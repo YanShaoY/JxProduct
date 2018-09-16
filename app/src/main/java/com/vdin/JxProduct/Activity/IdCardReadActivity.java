@@ -15,7 +15,7 @@ public class IdCardReadActivity extends BaseActivity {
 
         fullScreen(this);
         setFitsSystemWindows(this, true);
-        setHeaderleftTurnBack("返回");
+        setHeaderleftTurnBack("");
         setHeaderTitle("身份验证");
 
 

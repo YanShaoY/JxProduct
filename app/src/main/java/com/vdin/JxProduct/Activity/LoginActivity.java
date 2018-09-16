@@ -148,8 +148,8 @@ public class LoginActivity extends BaseActivity {
         }
 
         // 02 用户登录 TODO
-        login();
-//        JumpToMainActivity();
+//        login();
+        JumpToMainActivity();
 
     }
 

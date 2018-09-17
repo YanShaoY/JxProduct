@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.vdin.JxProduct.API.MetaDataAPI;
-import com.vdin.JxProduct.Activity.BaseActivity;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Util.MetaDataUtility;
 

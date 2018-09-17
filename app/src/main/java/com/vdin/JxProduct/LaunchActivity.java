@@ -13,9 +13,11 @@ import com.vdin.JxProduct.Util.LaunchUtil;
 import com.vdin.JxProduct.Util.MetaDataUtility;
 
 public class LaunchActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // 隐藏状态栏
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //加载启动界面
@@ -23,8 +25,7 @@ public class LaunchActivity extends AppCompatActivity {
 
         //设置等待时间，单位为毫秒
         Integer time = 1500;
-
-            // 当计时结束时，跳转
+        // 当计时结束时，跳转
         Handler handler = new Handler();
         handler.postDelayed(() -> {
 
@@ -58,7 +59,6 @@ public class LaunchActivity extends AppCompatActivity {
 
         //获取元数据
         MetaDataUtility.requestMetaDataSource();
-
 
     }
 

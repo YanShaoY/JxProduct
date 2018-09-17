@@ -83,8 +83,8 @@ public class LaunchUtil {
     }
 
     //获取登录密码
-    public static void getLoginPassword(Context context) {
-        PrefsManager.getPrefs(context, LOGIN_PASSWORD);
+    public static String getLoginPassword(Context context) {
+        return PrefsManager.getPrefs(context, LOGIN_PASSWORD);
     }
 
     //删除登录密码

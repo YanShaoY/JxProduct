@@ -8,6 +8,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.View;
@@ -25,6 +27,8 @@ public class BaseActivity extends AppCompatActivity {
 
     // 进度框
     private ProgressDialog progressDialog;
+    // 底部弹窗
+    private static Toast toast;
     // 上下文
     public Context mContext;
 
@@ -84,7 +88,30 @@ public class BaseActivity extends AppCompatActivity {
      * @param message 弹窗内容
      */
     public void showToastWithMessage(final String message) {
-        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+
+//        Handler mainHandler = new Handler(Looper.getMainLooper());
+//        mainHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                //已在主线程中，可以更新UI
+//                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
+
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // 在主线程中执行
+                if (toast == null){
+                    toast = Toast.makeText(mContext, message, Toast.LENGTH_SHORT);
+                }else {
+                    toast.setText(message);
+                }
+                toast.show();
+            }
+        });
+
     }
 
     /**

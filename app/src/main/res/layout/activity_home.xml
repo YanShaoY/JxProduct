@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#1abaae"
+            android:background="@drawable/home_login_bt_back"
             android:text="登录"
             android:textSize="16sp"
             android:padding="15dp"

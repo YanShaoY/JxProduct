@@ -12,189 +12,265 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_marginTop="7dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
+            <!-- 证件号码背景视图-->
             <View
-                android:id="@+id/card_line1"
+                android:id="@+id/card_number_back"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="50dp"
-                android:background="#cdd4e0"
+                android:layout_height="50dp"
+                android:background="#FFFFFF"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- 证件号码提示标签-->
             <TextView
-                android:id="@+id/card_text1"
+                android:id="@+id/card_number_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:gravity="center_vertical"
                 android:text="证件号码"
                 android:textColor="#7c8ba5"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@id/card_line1"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toBottomOf="@id/card_number_back"
+                app:layout_constraintLeft_toLeftOf="@id/card_number_back"
+                app:layout_constraintTop_toTopOf="@id/card_number_back" />
 
+            <!-- 证件号码输入框-->
             <EditText
-                android:id="@+id/card_code_edit"
+                android:id="@+id/card_number_edit"
                 android:layout_width="0dp"
-                android:layout_height="23dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="14dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="14dp"
+                android:layout_marginStart="20dp"
                 android:background="@null"
-                android:hint="请输入证件号"
+                android:hint="18位身份证号"
                 android:textColorHint="#cdd4e0"
                 android:textCursorDrawable="@drawable/cussor_color"
-                app:layout_constraintBottom_toTopOf="@id/card_line1"
-                app:layout_constraintLeft_toRightOf="@+id/card_text1"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toBottomOf="@id/card_number_back"
+                app:layout_constraintLeft_toRightOf="@+id/card_number_text"
+                app:layout_constraintRight_toRightOf="@id/card_number_back"
+                app:layout_constraintTop_toTopOf="@id/card_number_back" />
 
+            <!-- 证件号码下划线01-->
             <View
-                android:id="@+id/card_line2"
+                android:id="@+id/under_line_01"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="50dp"
                 android:background="#cdd4e0"
-                app:layout_constraintTop_toTopOf="@id/card_line1" />
-
-            <TextView
-                android:id="@+id/card_text3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="14dp"
-                android:text="联系电话"
-                android:textColor="#7c8ba5"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@id/card_line3"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_line2" />
-
-            <EditText
-                android:id="@+id/card_phone_edit"
-                android:layout_width="0dp"
-                android:layout_height="23dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="14dp"
-                android:background="@null"
-                android:hint="请输电话"
-                android:textColorHint="#cdd4e0"
-                android:textCursorDrawable="@drawable/cussor_color"
-                app:layout_constraintBottom_toTopOf="@id/card_line3"
-                app:layout_constraintLeft_toRightOf="@+id/card_text1"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_line2" />
+                app:layout_constraintTop_toBottomOf="@id/card_number_back" />
 
+            <!-- 姓名输入背景视图-->
             <View
-                android:id="@+id/card_line3"
+                android:id="@+id/card_name_back"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="50dp"
-                android:background="#cdd4e0"
-                app:layout_constraintTop_toTopOf="@id/card_line2" />
+                android:layout_height="50dp"
+                android:background="#FFFFFF"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/under_line_01" />
 
+            <!-- 姓名提示标签-->
             <TextView
-                android:id="@+id/card_text2"
+                android:id="@+id/card_name_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:gravity="center_vertical"
                 android:text="姓名"
                 android:textColor="#7c8ba5"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@id/card_line2"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_line1" />
+                app:layout_constraintBottom_toBottomOf="@+id/card_name_back"
+                app:layout_constraintLeft_toLeftOf="@+id/card_name_back"
+                app:layout_constraintTop_toTopOf="@+id/card_name_back" />
 
+            <!-- 姓名输入框-->
             <EditText
                 android:id="@+id/card_name_edit"
                 android:layout_width="0dp"
-                android:layout_height="23dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="14dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="14dp"
+                android:layout_marginStart="20dp"
                 android:background="@null"
-                android:hint="请输入姓名"
+                android:hint="中文姓名"
                 android:textColorHint="#cdd4e0"
                 android:textCursorDrawable="@drawable/cussor_color"
-                app:layout_constraintBottom_toTopOf="@id/card_line2"
-                app:layout_constraintLeft_toRightOf="@+id/card_text1"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_line1" />
+                app:layout_constraintBottom_toBottomOf="@+id/card_name_back"
+                app:layout_constraintLeft_toRightOf="@+id/card_number_text"
+                app:layout_constraintRight_toRightOf="@+id/card_name_back"
+                app:layout_constraintTop_toTopOf="@+id/card_name_back" />
 
+            <!-- 姓名输入下划线-->
+            <View
+                android:id="@+id/under_line_02"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#cdd4e0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_name_back" />
+
+            <!-- 联系电话背景视图-->
+            <View
+                android:id="@+id/card_phone_back"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#FFFFFF"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/under_line_02" />
+
+            <!-- 联系电话提示标签-->
             <TextView
+                android:id="@+id/card_phone_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:gravity="center_vertical"
+                android:text="联系电话"
+                android:textColor="#7c8ba5"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/card_phone_back"
+                app:layout_constraintLeft_toLeftOf="@+id/card_phone_back"
+                app:layout_constraintTop_toTopOf="@+id/card_phone_back" />
+
+            <!-- 联系电话输入框-->
+            <EditText
+                android:id="@+id/card_phone_edit"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="14dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginStart="20dp"
+                android:background="@null"
+                android:hint="11位手机号"
+                android:textColorHint="#cdd4e0"
+                android:textCursorDrawable="@drawable/cussor_color"
+                app:layout_constraintBottom_toBottomOf="@+id/card_phone_back"
+                app:layout_constraintLeft_toRightOf="@+id/card_number_text"
+                app:layout_constraintRight_toRightOf="@+id/card_phone_back"
+                app:layout_constraintTop_toTopOf="@+id/card_phone_back" />
+
+            <!-- 联系电话输入下划线-->
+            <View
+                android:id="@+id/under_line_03"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#cdd4e0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_phone_back" />
+
+            <!--委托人照片背景视图-->
+            <View
+                android:id="@+id/people_image_back"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@+id/under_line_04"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/under_line_03" />
+
+            <!-- 委托人照片提示标签-->
+            <TextView
+                android:id="@+id/people_image_text"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:gravity="center_vertical"
                 android:text="委托人照片"
                 android:textColor="#7c8ba5"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@id/card_line4"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_line3" />
+                app:layout_constraintTop_toBottomOf="@+id/under_line_03" />
 
-            <View
-                android:id="@+id/card_line4"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="50dp"
-                android:background="#cdd4e0"
-                app:layout_constraintTop_toTopOf="@id/card_line3" />
-
-            <View
-                android:id="@+id/card_line5"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="50dp"
-                android:background="#cdd4e0"
-                app:layout_constraintTop_toBottomOf="@id/card_image_button" />
-
+            <!-- 证件照片按钮-->
             <Button
                 android:id="@+id/card_image_button"
-                android:layout_width="140dp"
-                android:layout_height="200dp"
-                android:layout_marginLeft="14dp"
+                android:layout_width="125dp"
+                android:layout_height="155dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:background="@drawable/card_border"
-                android:drawablePadding="25dp"
+                android:drawablePadding="20dp"
                 android:drawableTop="@mipmap/ksdj_img_nfc_photo"
                 android:gravity="top|center_horizontal"
-                android:paddingTop="60dp"
+                android:paddingTop="40dp"
                 android:text="证件照片"
                 android:textColor="#c1c5ca"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@+id/card_line5"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_line4" />
+                app:layout_constraintTop_toBottomOf="@id/people_image_text" />
 
+            <!-- 现场照片按钮-->
             <Button
-                android:id="@+id/card_phone_button"
-                android:layout_width="140dp"
-                android:layout_height="200dp"
-                android:layout_marginBottom="50dp"
+                android:id="@+id/card_scene_button"
+                android:layout_width="125dp"
+                android:layout_height="155dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:background="@drawable/card_border"
-                android:drawablePadding="25dp"
+                android:drawablePadding="20dp"
                 android:drawableTop="@mipmap/ksdj_btn_camera_big"
                 android:gravity="top|center_horizontal"
-                android:paddingTop="60dp"
-                android:text="证件照片"
+                android:paddingTop="40dp"
+                android:text="现场照片"
                 android:textColor="#c1c5ca"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@+id/card_line5"
                 app:layout_constraintLeft_toRightOf="@id/card_image_button"
-                app:layout_constraintTop_toTopOf="@id/card_line4" />
+                app:layout_constraintTop_toBottomOf="@id/people_image_text" />
 
-            <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="50dp"-->
-            <!--/>-->
+            <!-- 委托人照片下划线-->
+            <View
+                android:id="@+id/under_line_04"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="25dp"
+                android:background="#cdd4e0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_image_button" />
 
         </android.support.constraint.ConstraintLayout>
 
     </ScrollView>
+
+    <!-- 下一步按钮-->
+    <Button
+        android:id="@+id/next_button_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginRight="21dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/ty_btn_selected"
+        android:text="下一步"
+        android:textColor="@drawable/ty_btn_wzcolor"
+        android:textSize="16sp" />
+
 </LinearLayout>

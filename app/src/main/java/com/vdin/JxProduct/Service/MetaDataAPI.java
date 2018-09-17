@@ -1,4 +1,4 @@
-package com.vdin.JxProduct.API;
+package com.vdin.JxProduct.Service;
 
 import com.vdin.JxProduct.Gson.MetaDataResponse;
 import com.vdin.JxProduct.Util.MetaDataUtility;

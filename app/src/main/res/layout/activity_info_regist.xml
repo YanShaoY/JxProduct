@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorbackground"
+    android:orientation="vertical"
+    tools:context=".Activity.InfoRegistActivity">
+
+    <include layout="@layout/base_nav_bar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="7dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp">
+
+            <!-- 车牌号背景视图-->
+            <View
+                android:id="@+id/license_plate_number_back"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#FFFFFF"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- 车牌号提示标签-->
+            <TextView
+                android:id="@+id/license_plate_number_text"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:gravity="center_vertical"
+                android:text="车牌号"
+                android:textColor="#7c8ba5"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/license_plate_number_back"
+                app:layout_constraintLeft_toLeftOf="@id/license_plate_number_back"
+                app:layout_constraintTop_toTopOf="@id/license_plate_number_back" />
+
+            <!--&lt;!&ndash; 证件号码输入框&ndash;&gt;-->
+            <!--<EditText-->
+            <!--android:id="@+id/card_number_edit"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_marginEnd="14dp"-->
+            <!--android:layout_marginLeft="20dp"-->
+            <!--android:layout_marginRight="14dp"-->
+            <!--android:layout_marginStart="20dp"-->
+            <!--android:background="@null"-->
+            <!--android:hint="18位身份证号"-->
+            <!--android:textColorHint="#cdd4e0"-->
+            <!--android:textCursorDrawable="@drawable/cussor_color"-->
+            <!--app:layout_constraintBottom_toBottomOf="@id/card_number_back"-->
+            <!--app:layout_constraintLeft_toRightOf="@+id/card_number_text"-->
+            <!--app:layout_constraintRight_toRightOf="@id/card_number_back"-->
+            <!--app:layout_constraintTop_toTopOf="@id/card_number_back" />-->
+
+            <!--&lt;!&ndash; 证件号码下划线01&ndash;&gt;-->
+            <!--<View-->
+            <!--android:id="@+id/under_line_01"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="#cdd4e0"-->
+            <!--app:layout_constraintLeft_toLeftOf="parent"-->
+            <!--app:layout_constraintRight_toRightOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@id/card_number_back" />-->
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+    <!-- 下一步按钮-->
+    <Button
+        android:id="@+id/next_button_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginRight="21dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/ty_btn_selected"
+        android:text="下一步"
+        android:textColor="@drawable/ty_btn_wzcolor"
+        android:textSize="16sp" />
+
+</LinearLayout>

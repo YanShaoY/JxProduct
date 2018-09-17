@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.vdin.JxProduct.API.MetaDataAPI;
+import com.vdin.JxProduct.Service.MetaDataAPI;
 import com.vdin.JxProduct.Gson.LoginDataResponse;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Util.HttpUtil;
@@ -27,8 +27,6 @@ import com.vdin.JxProduct.db.loginDataUserInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.LitePal;
-import org.litepal.crud.DataSupport;
-import org.litepal.crud.LitePalSupport;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -87,6 +85,9 @@ public class LoginActivity extends BaseActivity {
         // 填充用户名
         String userName = LaunchUtil.getLoginUsername(myActivity);
         etPhone.setText(userName);
+        // 填充密码
+        String userPwd = LaunchUtil.getLoginPassword(myActivity);
+        etPassword.setText(userPwd);
 
 
     }
@@ -148,8 +149,8 @@ public class LoginActivity extends BaseActivity {
         }
 
         // 02 用户登录 TODO
-//        login();
-        JumpToMainActivity();
+        login();
+//        JumpToMainActivity();
 
     }
 

@@ -1,4 +1,4 @@
-package com.vdin.JxProduct.Activity;
+package com.vdin.JxProduct.Adapter;
 
 import android.support.v4.view.PagerAdapter;
 import android.view.View;

@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.vdin.JxProduct.Activity.HomeActivity;
+import com.vdin.JxProduct.Adapter.GuidePageAdapter;
 import com.vdin.JxProduct.R;
 
 import java.util.ArrayList;

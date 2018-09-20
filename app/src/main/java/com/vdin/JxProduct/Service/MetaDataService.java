@@ -1,12 +1,12 @@
-package com.vdin.JxProduct.Util;
+package com.vdin.JxProduct.Service;
 
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.vdin.JxProduct.API.MetaDataApiRequest;
 import com.vdin.JxProduct.App.MainApplication;
 import com.vdin.JxProduct.Gson.MetaDataResponse;
-import com.vdin.JxProduct.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,54 +18,41 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
+import java.util.List;
 
 /**
  * @开发者 YanSY
- * @日期 2018/9/12
+ * @日期 2018/9/19
  * @描述 Vdin成都研发部
  */
-public class MetaDataUtility {
+public class MetaDataService {
+
+    private List<MetaDataResponse.CollectionBean.LinksBean> metaDataLinks;
 
     /**
-     * 请求元数据
+     * 构造单例
+     *
+     * @return 返回本类实例
      */
-    public static void requestMetaDataSource() {
+    public static MetaDataService getInstance() {
+        return MetaDataServiceHolder.instance;
+    }
 
-        MetaDataResponse metaDataFile = MetaDataUtility.getMetaDataFile();
-        if (metaDataFile != null && metaDataFile.isSuccess()){
-            return;
-        }
+    private static class MetaDataServiceHolder {
+        private static final MetaDataService instance = new MetaDataService();
+    }
 
-        String URLStr = MainApplication.getContext().getString(R.string.metadata_url);
+    private MetaDataService() {};
 
-        HttpUtil.getRequest(URLStr, new Callback() {
+
+    //初始化元数据
+    public void initMetadata() {
+        MetaDataApiRequest.requestMetaDataSource(new MetaDataApiRequest.NetWorkCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                // 获取请求到的数据
-                String responseText = response.body().string();
-                if (!TextUtils.isEmpty(responseText)) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseText);
-                        String metaDataStr = jsonObject.toString();
-                        MetaDataResponse metaDataResponse = new Gson().fromJson(metaDataStr, MetaDataResponse.class);
-                        if (metaDataResponse.isSuccess()) {
-                            saveMetaDataFile(metaDataStr);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
+            public void completeBlock(boolean isSuccess, Object object) {
+                if (isSuccess) {
+                    saveMetaDataFile((String) object);
                 }
-
             }
         });
     }
@@ -76,7 +63,7 @@ public class MetaDataUtility {
      * @param metaDataStr 元数据信息
      * @return
      */
-    private static Boolean saveMetaDataFile(String metaDataStr) {
+    private Boolean saveMetaDataFile(String metaDataStr) {
 
         FileOutputStream fileOutputStream = null;
         BufferedWriter writer = null;
@@ -97,7 +84,6 @@ public class MetaDataUtility {
                 }
             }
         }
-
         return false;
     }
 
@@ -106,7 +92,7 @@ public class MetaDataUtility {
      *
      * @return 返回元数据信息
      */
-    public static MetaDataResponse getMetaDataFile() {
+    public MetaDataResponse getMetaDataFile() {
 
         FileInputStream inputStream = null;
         BufferedReader reader = null;
@@ -149,16 +135,61 @@ public class MetaDataUtility {
         return null;
     }
 
+    /**
+     * 获取登录的URL
+     *
+     * @return 返回登录的URL
+     */
+    public String getLoginURL() {
+        return getMetaDataURLForRel("dosser/create/session");
+    }
+
+
+    /**
+     * 获取元数据的links
+     *
+     * @return
+     */
+    public List<MetaDataResponse.CollectionBean.LinksBean> getMetaDataLinks() {
+
+        if (metaDataLinks == null || metaDataLinks.size() == 0) {
+            MetaDataResponse metaDataFile = getMetaDataFile();
+            metaDataLinks = metaDataFile.getCollection().get(0).getLinks();
+        }
+
+        if (metaDataLinks == null || metaDataLinks.size() == 0) {
+            initMetadata();
+        }
+
+        return metaDataLinks;
+    }
+
+
+    /**
+     * 传入对应的rel 返回对应的url
+     *
+     * @param rel
+     * @return
+     */
+    public String getMetaDataURLForRel(String rel) {
+
+        if (metaDataLinks == null || metaDataLinks.size() == 0) {
+            MetaDataResponse metaDataFile = getMetaDataFile();
+            metaDataLinks = metaDataFile.getCollection().get(0).getLinks();
+        }
+
+        if (metaDataLinks == null || metaDataLinks.size() == 0) {
+            initMetadata();
+            return null;
+        }
+
+        for (MetaDataResponse.CollectionBean.LinksBean linksBean : metaDataLinks) {
+            if (linksBean.getRel().equals(rel)) {
+                return linksBean.getHref();
+            }
+        }
+        return null;
+    }
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-

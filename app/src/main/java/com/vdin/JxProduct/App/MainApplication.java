@@ -3,9 +3,6 @@ package com.vdin.JxProduct.App;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-
-import com.vdin.JxProduct.Util.MetaDataUtility;
-
 import org.litepal.LitePal;
 import org.litepal.LitePalApplication;
 

@@ -1,10 +1,13 @@
 package com.vdin.JxProduct.Activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.hjm.bottomtabbar.BottomTabBar;
 import com.vdin.JxProduct.Fragment.ContactsFragment;
@@ -12,6 +15,7 @@ import com.vdin.JxProduct.Fragment.MessagesFragment;
 import com.vdin.JxProduct.Fragment.MyFragment;
 import com.vdin.JxProduct.Fragment.WorkFragment;
 import com.vdin.JxProduct.Fragment.WorkFragment_ViewBinding;
+import com.vdin.JxProduct.LaunchActivity;
 import com.vdin.JxProduct.R;
 
 import butterknife.BindView;
@@ -57,6 +61,32 @@ public class MainActivity extends BaseActivity {
                 .setCurrentTab(0);                                                              // 设置当前选中的Tab，从0开始
 
     }
+
+
+    //退出时的时间
+    private long mExitTime;
+    //对返回键进行监听
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+
+            exit();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void exit() {
+        if ((System.currentTimeMillis() - mExitTime) > 2000) {
+            showToastWithMessage("再按一次退出");
+            mExitTime = System.currentTimeMillis();
+        } else {
+            finish();
+            System.exit(0);
+        }
+    }
+
 }
 
 

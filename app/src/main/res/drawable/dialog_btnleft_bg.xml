@@ -1,0 +1,8 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 默认 -->
+    <item android:drawable="@drawable/dialog_btnleft_normal" android:state_pressed="false"/>
+    <!-- 点击 -->
+    <item android:drawable="@drawable/dialog_btnleft_selected" android:state_pressed="true" />
+
+</selector>

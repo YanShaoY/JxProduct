@@ -3,7 +3,6 @@ package com.vdin.JxProduct.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,31 +14,20 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.vdin.JxProduct.Service.MetaDataAPI;
+import com.vdin.JxProduct.API.MetaDataApiRequest;
 import com.vdin.JxProduct.Gson.LoginDataResponse;
 import com.vdin.JxProduct.R;
+import com.vdin.JxProduct.Service.UserInfoService;
 import com.vdin.JxProduct.Util.HttpUtil;
 import com.vdin.JxProduct.Util.LaunchUtil;
 import com.vdin.JxProduct.db.loginDataLinks;
 import com.vdin.JxProduct.db.loginDataUserInfo;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.litepal.LitePal;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * 登录页面
@@ -90,8 +78,16 @@ public class LoginActivity extends BaseActivity {
         etPassword.setText(userPwd);
 
 
+        testData();
     }
 
+    /**
+     * 测试数据
+     */
+    private void testData(){
+        etPhone.setText("14258585201");
+        etPassword.setText("Az123456");
+    }
 
     /**
      * 返回按钮点击响应事件
@@ -126,7 +122,7 @@ public class LoginActivity extends BaseActivity {
 
         InputMethodManager imms = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imms.hideSoftInputFromWindow(etPhone.getWindowToken(), 0);
-        
+
         // 01 验证输入
         if (etPhone.getText().toString().length() == 0) {
             showToastWithMessage("请输入用户名");
@@ -169,116 +165,39 @@ public class LoginActivity extends BaseActivity {
     public void login() {
 
         showProgressDialog("登录中");
-
         //参数封装
-        Map<String, Object> params = new HashMap<>();
-        params.put("device_token", "1234560001");
-        params.put("industry_code", "MVMT");
-        params.put("login_name", etPhone.getText().toString());
-        params.put("login_type", "1");
-        params.put("ownerType", "1");
-        params.put("packageName", "cn.com.vdin.scMVMT.androidphone");
-        params.put("password", etPassword.getText().toString());
-        params.put("pusher_code", "1");
+        String username = etPhone.getText().toString();
+        String password = etPassword.getText().toString();
 
-        String URLStr = MetaDataAPI.getInstance().getLoginURL();
-
-        HttpUtil.postRequest(URLStr, params, new Callback() {
-
-            // 如果请求错误 提示并退出
+        MetaDataApiRequest.login(username, password, new MetaDataApiRequest.NetWorkCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void completeBlock(boolean isSuccess, Object object) {
                 closeProgressDialog();
-                e.printStackTrace();
-                showToastWithMessage("网络错误，请检查网路设置");
-                return;
-            }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
+                if (isSuccess) {
+                    LoginDataResponse loginDataResponse = (LoginDataResponse) object;
 
-                String responseText = response.body().string();
-
-                if (!TextUtils.isEmpty(responseText)) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseText);
-                        String metaDataStr = jsonObject.toString();
-
-                        LoginDataResponse loginDataResponse = new Gson().fromJson(metaDataStr, LoginDataResponse.class);
-                        if (loginDataResponse.isSuccess()) {
-                            // 入库
-                            saveJsonToDataBase(loginDataResponse);
-                            // 跳槽
-                            JumpToMainActivity();
-                            // 跑路
-                            return;
-                        }else {
-                            // 关闭提示进度窗
-                            closeProgressDialog();
-                            
-                            String msg = loginDataResponse.getMessage();
-                            msg = msg.length() > 0 ? msg : "网络错误" ;
-                            showToastWithMessage(msg);
-                            return;
-                        }
-
-                    } catch (JSONException e) {
-                        closeProgressDialog();
-                        e.printStackTrace();
-                        showToastWithMessage("网络错误，请检查网路设置");
-                        return;
+                    if (loginDataResponse.isSuccess()) {
+                        // 入库
+                        UserInfoService.getInstance().saveJsonToDataBase(loginDataResponse);
+                        // 跳槽
+                        JumpToMainActivity();
+                    } else {
+                        String msg = loginDataResponse.getMessage();
+                        msg = msg.length() > 0 ? msg : "网络错误";
+                        showToastWithMessage(msg);
                     }
 
+                } else {
+                    showToastWithMessage("网络错误，请检查网路设置");
                 }
 
             }
-
         });
 
     }
 
-    /**
-     * 将数据存入数据库
-     * @param response 请求到的数据Gson模型
-     */
-    public void saveJsonToDataBase(LoginDataResponse response){
 
-        // 删除所有用户数据
-        LitePal.deleteAll(loginDataUserInfo.class);
-        LitePal.deleteAll(loginDataLinks.class);
-
-        // 获取collection数据
-        LoginDataResponse.CollectionBean collectionBean = response.getCollection().get(0);
-
-        // 赋值数据库
-        loginDataUserInfo userInfo = new loginDataUserInfo();
-
-        userInfo.setHead_photo_url(collectionBean.getHead_photo_url());
-        userInfo.setHotel_code(collectionBean.getHotel_code());
-        userInfo.setHotel_pay_end_date(collectionBean.getHotel_pay_end_date());
-        userInfo.setIdentification_number(collectionBean.getIdentification_number());
-        userInfo.setName(collectionBean.getName());
-        userInfo.setPhone_number(collectionBean.getPhone_number());
-        userInfo.setPlace_id(collectionBean.getPlace_id());
-        userInfo.setPlace_name(collectionBean.getPlace_name());
-        userInfo.setPractitioner_id(collectionBean.getPractitioner_id());
-        userInfo.setSession_id(collectionBean.getSession_id());
-        userInfo.setSex(collectionBean.getSex());
-        userInfo.setTencent_im_sign(collectionBean.getTencent_im_sign());
-
-        // 遍历Links集合 并存入links中
-        List<loginDataLinks> links = new ArrayList<loginDataLinks>();
-        for (LoginDataResponse.CollectionBean.LinksBean linksBean : collectionBean.getLinks()){
-
-            loginDataLinks dataLinks = new loginDataLinks();
-            dataLinks.setRel(linksBean.getRel());
-            dataLinks.setHref(linksBean.getHref());
-            dataLinks.setTitle(linksBean.getTitle());
-
-            links.add(dataLinks);
-            dataLinks.save();
-        }
-    }
 
 
     /**
@@ -297,7 +216,7 @@ public class LoginActivity extends BaseActivity {
         // 跳转主界面
         Intent mIntent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(mIntent);
-        LoginActivity.this.finish();
+        this.finish();
     }
 
     /**
@@ -330,16 +249,6 @@ public class LoginActivity extends BaseActivity {
                 }
             }
         });
-    }
-
-    /**
-     * 重写返回手机返回按钮事件
-     */
-    @Override
-    public void onBackPressed() {
-        Intent mIntent = new Intent(LoginActivity.this, HomeActivity.class);
-        startActivity(mIntent);
-        super.onBackPressed();
     }
 
     /**

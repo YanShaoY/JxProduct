@@ -9,8 +9,8 @@ import android.view.WindowManager;
 import com.vdin.JxProduct.Activity.GuideActivity;
 import com.vdin.JxProduct.Activity.HomeActivity;
 import com.vdin.JxProduct.Activity.MainActivity;
+import com.vdin.JxProduct.Service.MetaDataService;
 import com.vdin.JxProduct.Util.LaunchUtil;
-import com.vdin.JxProduct.Util.MetaDataUtility;
 
 public class LaunchActivity extends AppCompatActivity {
 
@@ -58,7 +58,7 @@ public class LaunchActivity extends AppCompatActivity {
         }, time);
 
         //获取元数据
-        MetaDataUtility.requestMetaDataSource();
+        MetaDataService.getInstance().initMetadata();
 
     }
 

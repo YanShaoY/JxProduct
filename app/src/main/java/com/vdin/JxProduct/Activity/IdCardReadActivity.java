@@ -1,5 +1,7 @@
 package com.vdin.JxProduct.Activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -7,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -39,6 +42,8 @@ public class IdCardReadActivity extends BaseActivity {
 
     // 现场照片的本地路径
     private String scenePhotoUrl = "";
+    // 存储本类实例
+    public static Activity idCardActivity = null;
 
     /**
      * 视图创建方法
@@ -50,12 +55,26 @@ public class IdCardReadActivity extends BaseActivity {
         setContentView(R.layout.activity_id_card_read);
         ButterKnife.bind(this);
 
+        idCardActivity = this;
+
         fullScreen(this);
         setFitsSystemWindows(this, true);
         setHeaderleftTurnBack("");
         setHeaderTitle("身份验证");
 
+        // TODO 测试数据装载
+        testData();
 
+    }
+
+    public void testData(){
+
+        cardNumberEdit.setText("511528199501151612");
+        cardNameEdit.setText("严少颜");
+        cardPhoneEdit.setText("17602887120");
+
+        InputMethodManager imms = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imms.hideSoftInputFromWindow(cardNumberEdit.getWindowToken(), 0);
     }
 
     /**
@@ -63,6 +82,7 @@ public class IdCardReadActivity extends BaseActivity {
      */
     @OnClick(R.id.card_image_button)
     public void onCardImageButtonClicked() {
+
     }
 
     /**
@@ -157,13 +177,18 @@ public class IdCardReadActivity extends BaseActivity {
 
     }
 
+    /**
+     * 界面注销时 删除本地图片
+     */
+    @Override
+    protected void onDestroy() {
+        // 删除本地路径的原图
+        if (StringUtils.isEmpty(scenePhotoUrl)){
+            FileUtils.delFileByLocalPath(scenePhotoUrl);
+        }
 
-
-
-
-
-
-
+        super.onDestroy();
+    }
 }
 
 

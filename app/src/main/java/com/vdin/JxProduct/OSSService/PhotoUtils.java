@@ -117,7 +117,7 @@ public class PhotoUtils {
         File fileUri = new File(currPicUrl);
         Uri imageUri = Uri.fromFile(fileUri);
         if (Build.VERSION.SDK_INT >= 24) {
-            imageUri = FileProvider.getUriForFile(context, "com.bignerdranch.android.myapplication.fileprovider", fileUri);//通过FileProvider创建一个content类型的Uri
+            imageUri = FileProvider.getUriForFile(context, "com.vdin.JxProduct.fileprovider", fileUri);//通过FileProvider创建一个content类型的Uri
             intentFromCapture.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
         }
         intentFromCapture.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
@@ -245,7 +245,7 @@ public class PhotoUtils {
         Intent intent = new Intent("com.android.camera.action.CROP");
         Uri imageUri = Uri.fromFile(fileUri);
         if (Build.VERSION.SDK_INT >= 24) {
-            imageUri = FileProvider.getUriForFile(context, "com.bignerdranch.android.myapplication.fileprovider", fileUri);//通过FileProvider创建一个content类型的Uri
+            imageUri = FileProvider.getUriForFile(context, "com.vdin.JxProduct.fileprovider", fileUri);//通过FileProvider创建一个content类型的Uri
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
         }
         intent.setDataAndType(imageUri, "image/*");

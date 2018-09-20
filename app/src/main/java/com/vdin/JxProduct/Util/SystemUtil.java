@@ -19,6 +19,7 @@ public class SystemUtil {
         try {
             ApplicationInfo info = context.getApplicationInfo();
             return (info.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;

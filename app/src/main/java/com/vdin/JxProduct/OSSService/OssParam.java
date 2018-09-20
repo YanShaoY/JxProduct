@@ -5,7 +5,7 @@ package com.vdin.JxProduct.OSSService;
  */
 
 public class OssParam {
-    public static final String OBJECT_KEY = "JXApp/"; //留宿
+    public static final String OBJECT_KEY = "JXApp/"; //机修
     public static final String BUCKETNAME = "picasso-dev";
     public static final String KEY = "cqzDQqcDkcSm72YkJqvgtb1cIGT7a4";
     public static final String ID = "LTAIQWCTRBo7lVY3";

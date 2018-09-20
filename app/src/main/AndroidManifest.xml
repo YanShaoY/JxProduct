@@ -28,7 +28,7 @@
         <!-- Android7.0调用系统相机拍照、访问相册 -->
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.bignerdranch.android.myapplication.fileprovider"
+            android:authorities="com.vdin.JxProduct.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

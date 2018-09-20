@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.vdin.JxProduct.R;
-import com.vdin.JxProduct.Util.MetaDataUtility;
+import com.vdin.JxProduct.Service.MetaDataService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +38,7 @@ public class HomeActivity extends BaseActivity {
 
                 break;
             case R.id.btn_login:
-                MetaDataUtility.requestMetaDataSource();
+                MetaDataService.getInstance().initMetadata();
                 Intent mIntent = new Intent(HomeActivity.this,
                         LoginActivity.class);
                 startActivity(mIntent);

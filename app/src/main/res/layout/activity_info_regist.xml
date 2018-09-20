@@ -27,7 +27,7 @@
                 android:id="@+id/license_plate_number_back"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="#FFFFFF"
+                android:background="@drawable/works_editbg"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,50 +47,401 @@
                 app:layout_constraintLeft_toLeftOf="@id/license_plate_number_back"
                 app:layout_constraintTop_toTopOf="@id/license_plate_number_back" />
 
-            <!--&lt;!&ndash; 证件号码输入框&ndash;&gt;-->
-            <!--<EditText-->
-            <!--android:id="@+id/card_number_edit"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_marginEnd="14dp"-->
-            <!--android:layout_marginLeft="20dp"-->
-            <!--android:layout_marginRight="14dp"-->
-            <!--android:layout_marginStart="20dp"-->
-            <!--android:background="@null"-->
-            <!--android:hint="18位身份证号"-->
-            <!--android:textColorHint="#cdd4e0"-->
-            <!--android:textCursorDrawable="@drawable/cussor_color"-->
-            <!--app:layout_constraintBottom_toBottomOf="@id/card_number_back"-->
-            <!--app:layout_constraintLeft_toRightOf="@+id/card_number_text"-->
-            <!--app:layout_constraintRight_toRightOf="@id/card_number_back"-->
-            <!--app:layout_constraintTop_toTopOf="@id/card_number_back" />-->
+            <!-- 车牌号输入框-->
+            <EditText
+                android:id="@+id/license_plate_number_edit"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="14dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginStart="20dp"
+                android:background="@null"
+                android:hint="请输入正确的车牌号"
+                android:textColorHint="#cdd4e0"
+                android:textCursorDrawable="@drawable/cussor_color"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/license_plate_number_back"
+                app:layout_constraintLeft_toRightOf="@+id/license_plate_number_text"
+                app:layout_constraintRight_toRightOf="@id/license_plate_number_back"
+                app:layout_constraintTop_toTopOf="@id/license_plate_number_back" />
 
-            <!--&lt;!&ndash; 证件号码下划线01&ndash;&gt;-->
-            <!--<View-->
-            <!--android:id="@+id/under_line_01"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="1dp"-->
-            <!--android:background="#cdd4e0"-->
-            <!--app:layout_constraintLeft_toLeftOf="parent"-->
-            <!--app:layout_constraintRight_toRightOf="parent"-->
-            <!--app:layout_constraintTop_toBottomOf="@id/card_number_back" />-->
+            <!-- 车架号背景视图-->
+            <View
+                android:id="@+id/che_jia_number_back"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/works_editbg"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/license_plate_number_back" />
+
+            <!-- 车架号提示标签-->
+            <TextView
+                android:id="@+id/che_jia_number_text"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:gravity="center_vertical"
+                android:text="车架号"
+                android:textColor="#7c8ba5"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/che_jia_number_back"
+                app:layout_constraintLeft_toLeftOf="@+id/che_jia_number_back"
+                app:layout_constraintTop_toTopOf="@+id/che_jia_number_back" />
+
+            <!-- 车架号输入框-->
+            <EditText
+                android:id="@+id/che_jia_number_edit"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="14dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginStart="20dp"
+                android:background="@null"
+                android:hint="请输入车架号"
+                android:textColorHint="#CDD4E0"
+                android:textCursorDrawable="@drawable/cussor_color"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/che_jia_number_back"
+                app:layout_constraintLeft_toRightOf="@+id/che_jia_number_text"
+                app:layout_constraintRight_toRightOf="@id/che_jia_number_back"
+                app:layout_constraintTop_toTopOf="@+id/che_jia_number_back" />
+
+            <!-- 发动机号背景视图-->
+            <View
+                android:id="@+id/fa_dong_ji_number_back"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/works_editbg"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/che_jia_number_back" />
+
+            <!-- 发动机号提示标签-->
+            <TextView
+                android:id="@+id/fa_dong_ji_number_text"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:gravity="center_vertical"
+                android:text="发动机号"
+                android:textColor="#7c8ba5"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/fa_dong_ji_number_back"
+                app:layout_constraintLeft_toLeftOf="@+id/fa_dong_ji_number_back"
+                app:layout_constraintTop_toTopOf="@+id/fa_dong_ji_number_back" />
+
+            <!-- 发动机号输入框-->
+            <EditText
+                android:id="@+id/fa_dong_ji_number_edit"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="14dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginStart="20dp"
+                android:background="@null"
+                android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ*"
+                android:hint="请输入正确的发动机号"
+                android:maxLength="17"
+                android:maxLines="1"
+                android:textColorHint="#CDD4E0"
+                android:textCursorDrawable="@drawable/cussor_color"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/fa_dong_ji_number_back"
+                app:layout_constraintLeft_toRightOf="@+id/fa_dong_ji_number_text"
+                app:layout_constraintRight_toLeftOf="@id/xuan_tian_text"
+                app:layout_constraintTop_toTopOf="@+id/fa_dong_ji_number_back" />
+
+            <!-- 选填标签-->
+            <TextView
+                android:id="@+id/xuan_tian_text"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
+                android:text="(选填)"
+                android:textColor="#CDD4E0"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/fa_dong_ji_number_back"
+                app:layout_constraintRight_toRightOf="@id/fa_dong_ji_number_back"
+                app:layout_constraintTop_toTopOf="@id/fa_dong_ji_number_back" />
+
+            <!-- 车型背景视图-->
+            <View
+                android:id="@+id/car_type_back"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#FFFFFF"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fa_dong_ji_number_back" />
+
+            <!-- 车型提示标签-->
+            <TextView
+                android:id="@+id/car_type_text"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:gravity="center_vertical"
+                android:text="车型"
+                android:textColor="#7c8ba5"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/car_type_back"
+                app:layout_constraintLeft_toLeftOf="@+id/car_type_back"
+                app:layout_constraintTop_toTopOf="@+id/car_type_back" />
+
+            <!-- 车型输入框-->
+            <EditText
+                android:id="@+id/car_type_edit"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="14dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginStart="20dp"
+                android:background="@null"
+                android:hint="如:2013款丰田普拉多4L四驱"
+                android:textColorHint="#CDD4E0"
+                android:textCursorDrawable="@drawable/cussor_color"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/car_type_back"
+                app:layout_constraintLeft_toRightOf="@+id/car_type_text"
+                app:layout_constraintRight_toRightOf="@id/car_type_back"
+                app:layout_constraintTop_toTopOf="@+id/car_type_back" />
+
+            <!-- 车型视图下划线-->
+            <View
+                android:id="@+id/under_line_01"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#b9b9cd"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/car_type_back" />
+
+            <!-- 颜色选择背景视图-->
+            <View
+                android:id="@+id/color_choose_back"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/works_editbg"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/under_line_01" />
+
+            <!-- 颜色选择提示标签-->
+            <TextView
+                android:id="@+id/color_choose_text"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:gravity="center_vertical"
+                android:text="颜色"
+                android:textColor="#7c8ba5"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/color_choose_back"
+                app:layout_constraintLeft_toLeftOf="@+id/color_choose_back"
+                app:layout_constraintTop_toTopOf="@+id/color_choose_back" />
+
+            <!-- 颜色选择按钮-->
+            <Button
+                android:id="@+id/color_choose_button"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#00000000"
+                android:drawableEnd="@mipmap/right_arrow"
+                android:drawablePadding="10dp"
+                android:drawableRight="@mipmap/right_arrow"
+                android:gravity="end|center_vertical"
+                android:text="未选择"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/color_choose_back"
+                app:layout_constraintRight_toRightOf="@+id/color_choose_back"
+                app:layout_constraintTop_toTopOf="@+id/color_choose_back" />
+
+            <!-- 业务描述-->
+            <LinearLayout
+                android:id="@+id/desc_linear_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/color_choose_back">
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="2"
+                    android:background="#dbe1eb" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="业务描述"
+                    android:textColor="#bcc5d3"
+                    android:textSize="12sp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="2"
+                    android:background="#dbe1eb" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/desc_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="191dp"
+                android:layout_margin="14dp"
+                android:background="@drawable/works_editbg_all"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/desc_linear_layout">
+
+                <EditText
+                    android:id="@+id/desc_info_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:gravity="top"
+                    android:hint="简单描述工作部位，例如：左前大灯，左前翼子板。"
+                    android:maxLength="200"
+                    android:padding="10dp"
+                    android:textColor="#000000"
+                    android:textColorHint="#b9b9cd"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/desc_info_warn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:padding="10dp"
+                    android:text="还可以输入200个字"
+                    android:textColor="#b9b9cd"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+
+            <!-- 拍照提示-->
+            <TextView
+                android:id="@+id/pictures_msg_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:text="请拍摄车辆现场照，车辆交付人现场照片及行驶证正本的照片。临时牌照需要拍摄正反面。"
+                android:textColor="#bcc5d3"
+                android:textSize="13sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/desc_relative_layout" />
+
+            <!-- 拍照列表视图-->
+            <com.vdin.JxProduct.View.WorkPicGridView
+                android:id="@+id/regist_pic_grid_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginTop="10dp"
+                android:horizontalSpacing="10dp"
+                android:listSelector="#00000000"
+                android:numColumns="3"
+                android:scrollbars="none"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pictures_msg_text">
+
+            </com.vdin.JxProduct.View.WorkPicGridView>
+
+            <!-- 加急业务-->
+            <RelativeLayout
+                android:id="@+id/urgent_business_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/works_editbg"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/regist_pic_grid_view">
+
+                <TextView
+                    android:id="@+id/urgent_business_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingEnd="4dp"
+                    android:paddingLeft="14dp"
+                    android:paddingRight="4dp"
+                    android:paddingStart="14dp"
+                    android:text="加急业务"
+                    android:textColor="#7c8ba5"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/urgent_business_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:paddingEnd="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:src="@mipmap/close" />
+
+            </RelativeLayout>
+
+            <!-- 完成按钮-->
+            <Button
+                android:id="@+id/complete_button_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:layout_marginLeft="21dp"
+                android:layout_marginRight="21dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/ty_btn_selected"
+                android:text="完成登记"
+                android:textColor="@drawable/ty_btn_wzcolor"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/urgent_business_relative_layout" />
 
         </android.support.constraint.ConstraintLayout>
 
     </ScrollView>
 
-    <!-- 下一步按钮-->
-    <Button
-        android:id="@+id/next_button_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="21dp"
-        android:layout_marginRight="21dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/ty_btn_selected"
-        android:text="下一步"
-        android:textColor="@drawable/ty_btn_wzcolor"
-        android:textSize="16sp" />
 
 </LinearLayout>

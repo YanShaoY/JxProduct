@@ -1,21 +1,16 @@
 package com.vdin.JxProduct.Activity;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.hjm.bottomtabbar.BottomTabBar;
 import com.vdin.JxProduct.Fragment.ContactsFragment;
 import com.vdin.JxProduct.Fragment.MessagesFragment;
 import com.vdin.JxProduct.Fragment.MyFragment;
 import com.vdin.JxProduct.Fragment.WorkFragment;
-import com.vdin.JxProduct.Fragment.WorkFragment_ViewBinding;
-import com.vdin.JxProduct.LaunchActivity;
 import com.vdin.JxProduct.R;
 
 import butterknife.BindView;

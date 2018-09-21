@@ -18,6 +18,7 @@ import com.vdin.JxProduct.API.MetaDataApiRequest;
 import com.vdin.JxProduct.Gson.LoginDataResponse;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Service.UserInfoService;
+import com.vdin.JxProduct.Util.ActivityConllector;
 import com.vdin.JxProduct.Util.HttpUtil;
 import com.vdin.JxProduct.Util.LaunchUtil;
 import com.vdin.JxProduct.db.loginDataLinks;
@@ -216,7 +217,7 @@ public class LoginActivity extends BaseActivity {
         // 跳转主界面
         Intent mIntent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(mIntent);
-        this.finish();
+        ActivityConllector.finishAll();
     }
 
     /**

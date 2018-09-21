@@ -1,6 +1,7 @@
 package com.vdin.JxProduct.API;
 
 import com.vdin.JxProduct.App.MainApplication;
+import com.vdin.JxProduct.Gson.WorkAddRegistGson;
 import com.vdin.JxProduct.OSSService.OnUploadOssCallbackListener;
 import com.vdin.JxProduct.OSSService.UploadFileOSS;
 import com.vdin.JxProduct.Service.UserInfoService;
@@ -73,7 +74,7 @@ public class WorkApiRequest {
     }
 
     //新增登记
-    public static void addRegister(Map<String, Object> params, MetaDataApiRequest.NetWorkCallBack callBack) {
+    public static void addRegister(WorkAddRegistGson params, MetaDataApiRequest.NetWorkCallBack callBack) {
         String url = UserInfoService.getInstance().getAddRegisterUrl();
         HttpUtil.postRequest(url, params, new Callback() {
             @Override

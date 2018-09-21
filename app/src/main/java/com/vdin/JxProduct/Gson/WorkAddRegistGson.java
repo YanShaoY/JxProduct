@@ -9,271 +9,324 @@ import java.util.List;
  */
 public class WorkAddRegistGson {
 
+
     /**
-     * brand : 奥迪A6
-     * brithDate : 2017-05-23
-     * carNumber : 川A-88888
-     * color : 1
-     * customerEthnicityCode : HA
-     * customerGenderCode : 1
-     * gcjLatitude : 30.666667
-     * gcjLongitude : 104.666667
-     * idCardPhotoList : [{"order_number":0,"photo_name":"业务照片","photo_url":"https://baidu.com"}]
-     * idNumber : 220401197101245690
-     * identificationType : 2
-     * issuingAuthority : 高新区公安局
-     * name : 张三
-     * nameCpaFisrt : zs
-     * nameCpaFull : zhangsan
-     * permanentAddress : 成都市高新区
-     * phone : 13512345678
-     * rentAddress : 成都市高新区
-     * rentTime : 2017-05-23 12:00:00
-     * returnAddress : 成都市高新区
-     * returnTime : 2017-05-23 12:00:00
-     * scenePhotoList : [{"order_number":0,"photo_name":"业务照片","photo_url":"https://baidu.com"}]
-     * validityFromDate : 2017-05-23
-     * validityThruDate : 2017-05-23
-     * wgsLatitude : 30.666667
-     * wgsLongitude : 104.666667
+     * address : 成都市
+     * bizPhotoDTOList : [{"order_number":0,"photo_name":"业务照片","photo_url":"https://baidu.com"}]
+     * customerInfo : {"birthDate":"2017-06-04","currentAddress":"现住详址","ethnicityCode":"HA","genderCode":"1","idNumber":"510105201405013191","idPhotoUrl":"www.baidu.com","identificationType":2,"issuingAuthority":"签发机关","name":"姓名","permanentAddress":"户籍地址","phone":"13345678123","validityFromDate":"2015-05-01","validityThruDate":"2025-05-01"}
+     * latitude : 107
+     * longitude : 107
+     * plateNumber : 川A54110
+     * position : {"gcjLat":30.000002,"gcjLon":120.000002,"wgsLat":30.000084,"wgsLon":120.000084}
+     * serviceDescription : 装防弹玻璃
+     * urgentBiz : false
+     * vehicleColorCode : string
+     * vehicleEngineNumber : 发动机号样例
+     * vehicleIdentifyNumber : 车架号样例
+     * vehicleModel : 红旗，防弹版
      */
 
-    private String brand;
-    private String brithDate;
-    private String carNumber;
-    private int color;
-    private String customerEthnicityCode;
-    private String customerGenderCode;
-    private double gcjLatitude;
-    private double gcjLongitude;
-    private String idNumber;
-    private int identificationType;
-    private String issuingAuthority;
-    private String name;
-    private String nameCpaFisrt;
-    private String nameCpaFull;
-    private String permanentAddress;
-    private String phone;
-    private String rentAddress;
-    private String rentTime;
-    private String returnAddress;
-    private String returnTime;
-    private String validityFromDate;
-    private String validityThruDate;
-    private double wgsLatitude;
-    private double wgsLongitude;
-    private List<IdCardPhotoListBean> idCardPhotoList;
-    private List<ScenePhotoListBean> scenePhotoList;
+    private String address;
+    private CustomerInfoBean customerInfo;
+    private int latitude;
+    private int longitude;
+    private String plateNumber;
+    private PositionBean position;
+    private String serviceDescription;
+    private boolean urgentBiz;
+    private String vehicleColorCode;
+    private String vehicleEngineNumber;
+    private String vehicleIdentifyNumber;
+    private String vehicleModel;
+    private List<BizPhotoDTOListBean> bizPhotoDTOList;
 
-    public String getBrand() {
-        return brand;
+    public String getAddress() {
+        return address;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getBrithDate() {
-        return brithDate;
+    public CustomerInfoBean getCustomerInfo() {
+        return customerInfo;
     }
 
-    public void setBrithDate(String brithDate) {
-        this.brithDate = brithDate;
+    public void setCustomerInfo(CustomerInfoBean customerInfo) {
+        this.customerInfo = customerInfo;
     }
 
-    public String getCarNumber() {
-        return carNumber;
+    public int getLatitude() {
+        return latitude;
     }
 
-    public void setCarNumber(String carNumber) {
-        this.carNumber = carNumber;
+    public void setLatitude(int latitude) {
+        this.latitude = latitude;
     }
 
-    public int getColor() {
-        return color;
+    public int getLongitude() {
+        return longitude;
     }
 
-    public void setColor(int color) {
-        this.color = color;
+    public void setLongitude(int longitude) {
+        this.longitude = longitude;
     }
 
-    public String getCustomerEthnicityCode() {
-        return customerEthnicityCode;
+    public String getPlateNumber() {
+        return plateNumber;
     }
 
-    public void setCustomerEthnicityCode(String customerEthnicityCode) {
-        this.customerEthnicityCode = customerEthnicityCode;
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
     }
 
-    public String getCustomerGenderCode() {
-        return customerGenderCode;
+    public PositionBean getPosition() {
+        return position;
     }
 
-    public void setCustomerGenderCode(String customerGenderCode) {
-        this.customerGenderCode = customerGenderCode;
+    public void setPosition(PositionBean position) {
+        this.position = position;
     }
 
-    public double getGcjLatitude() {
-        return gcjLatitude;
+    public String getServiceDescription() {
+        return serviceDescription;
     }
 
-    public void setGcjLatitude(double gcjLatitude) {
-        this.gcjLatitude = gcjLatitude;
+    public void setServiceDescription(String serviceDescription) {
+        this.serviceDescription = serviceDescription;
     }
 
-    public double getGcjLongitude() {
-        return gcjLongitude;
+    public boolean isUrgentBiz() {
+        return urgentBiz;
     }
 
-    public void setGcjLongitude(double gcjLongitude) {
-        this.gcjLongitude = gcjLongitude;
+    public void setUrgentBiz(boolean urgentBiz) {
+        this.urgentBiz = urgentBiz;
     }
 
-    public String getIdNumber() {
-        return idNumber;
+    public String getVehicleColorCode() {
+        return vehicleColorCode;
     }
 
-    public void setIdNumber(String idNumber) {
-        this.idNumber = idNumber;
+    public void setVehicleColorCode(String vehicleColorCode) {
+        this.vehicleColorCode = vehicleColorCode;
     }
 
-    public int getIdentificationType() {
-        return identificationType;
+    public String getVehicleEngineNumber() {
+        return vehicleEngineNumber;
     }
 
-    public void setIdentificationType(int identificationType) {
-        this.identificationType = identificationType;
+    public void setVehicleEngineNumber(String vehicleEngineNumber) {
+        this.vehicleEngineNumber = vehicleEngineNumber;
     }
 
-    public String getIssuingAuthority() {
-        return issuingAuthority;
+    public String getVehicleIdentifyNumber() {
+        return vehicleIdentifyNumber;
     }
 
-    public void setIssuingAuthority(String issuingAuthority) {
-        this.issuingAuthority = issuingAuthority;
+    public void setVehicleIdentifyNumber(String vehicleIdentifyNumber) {
+        this.vehicleIdentifyNumber = vehicleIdentifyNumber;
     }
 
-    public String getName() {
-        return name;
+    public String getVehicleModel() {
+        return vehicleModel;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setVehicleModel(String vehicleModel) {
+        this.vehicleModel = vehicleModel;
     }
 
-    public String getNameCpaFisrt() {
-        return nameCpaFisrt;
+    public List<BizPhotoDTOListBean> getBizPhotoDTOList() {
+        return bizPhotoDTOList;
     }
 
-    public void setNameCpaFisrt(String nameCpaFisrt) {
-        this.nameCpaFisrt = nameCpaFisrt;
+    public void setBizPhotoDTOList(List<BizPhotoDTOListBean> bizPhotoDTOList) {
+        this.bizPhotoDTOList = bizPhotoDTOList;
     }
 
-    public String getNameCpaFull() {
-        return nameCpaFull;
+    public static class CustomerInfoBean {
+        /**
+         * birthDate : 2017-06-04
+         * currentAddress : 现住详址
+         * ethnicityCode : HA
+         * genderCode : 1
+         * idNumber : 510105201405013191
+         * idPhotoUrl : www.baidu.com
+         * identificationType : 2
+         * issuingAuthority : 签发机关
+         * name : 姓名
+         * permanentAddress : 户籍地址
+         * phone : 13345678123
+         * validityFromDate : 2015-05-01
+         * validityThruDate : 2025-05-01
+         */
+
+        private String birthDate;
+        private String currentAddress;
+        private String ethnicityCode;
+        private String genderCode;
+        private String idNumber;
+        private String idPhotoUrl;
+        private int identificationType;
+        private String issuingAuthority;
+        private String name;
+        private String permanentAddress;
+        private String phone;
+        private String validityFromDate;
+        private String validityThruDate;
+
+        public String getBirthDate() {
+            return birthDate;
+        }
+
+        public void setBirthDate(String birthDate) {
+            this.birthDate = birthDate;
+        }
+
+        public String getCurrentAddress() {
+            return currentAddress;
+        }
+
+        public void setCurrentAddress(String currentAddress) {
+            this.currentAddress = currentAddress;
+        }
+
+        public String getEthnicityCode() {
+            return ethnicityCode;
+        }
+
+        public void setEthnicityCode(String ethnicityCode) {
+            this.ethnicityCode = ethnicityCode;
+        }
+
+        public String getGenderCode() {
+            return genderCode;
+        }
+
+        public void setGenderCode(String genderCode) {
+            this.genderCode = genderCode;
+        }
+
+        public String getIdNumber() {
+            return idNumber;
+        }
+
+        public void setIdNumber(String idNumber) {
+            this.idNumber = idNumber;
+        }
+
+        public String getIdPhotoUrl() {
+            return idPhotoUrl;
+        }
+
+        public void setIdPhotoUrl(String idPhotoUrl) {
+            this.idPhotoUrl = idPhotoUrl;
+        }
+
+        public int getIdentificationType() {
+            return identificationType;
+        }
+
+        public void setIdentificationType(int identificationType) {
+            this.identificationType = identificationType;
+        }
+
+        public String getIssuingAuthority() {
+            return issuingAuthority;
+        }
+
+        public void setIssuingAuthority(String issuingAuthority) {
+            this.issuingAuthority = issuingAuthority;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getPermanentAddress() {
+            return permanentAddress;
+        }
+
+        public void setPermanentAddress(String permanentAddress) {
+            this.permanentAddress = permanentAddress;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+
+        public String getValidityFromDate() {
+            return validityFromDate;
+        }
+
+        public void setValidityFromDate(String validityFromDate) {
+            this.validityFromDate = validityFromDate;
+        }
+
+        public String getValidityThruDate() {
+            return validityThruDate;
+        }
+
+        public void setValidityThruDate(String validityThruDate) {
+            this.validityThruDate = validityThruDate;
+        }
     }
 
-    public void setNameCpaFull(String nameCpaFull) {
-        this.nameCpaFull = nameCpaFull;
+    public static class PositionBean {
+        /**
+         * gcjLat : 30.000002
+         * gcjLon : 120.000002
+         * wgsLat : 30.000084
+         * wgsLon : 120.000084
+         */
+
+        private double gcjLat;
+        private double gcjLon;
+        private double wgsLat;
+        private double wgsLon;
+
+        public double getGcjLat() {
+            return gcjLat;
+        }
+
+        public void setGcjLat(double gcjLat) {
+            this.gcjLat = gcjLat;
+        }
+
+        public double getGcjLon() {
+            return gcjLon;
+        }
+
+        public void setGcjLon(double gcjLon) {
+            this.gcjLon = gcjLon;
+        }
+
+        public double getWgsLat() {
+            return wgsLat;
+        }
+
+        public void setWgsLat(double wgsLat) {
+            this.wgsLat = wgsLat;
+        }
+
+        public double getWgsLon() {
+            return wgsLon;
+        }
+
+        public void setWgsLon(double wgsLon) {
+            this.wgsLon = wgsLon;
+        }
     }
 
-    public String getPermanentAddress() {
-        return permanentAddress;
-    }
-
-    public void setPermanentAddress(String permanentAddress) {
-        this.permanentAddress = permanentAddress;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getRentAddress() {
-        return rentAddress;
-    }
-
-    public void setRentAddress(String rentAddress) {
-        this.rentAddress = rentAddress;
-    }
-
-    public String getRentTime() {
-        return rentTime;
-    }
-
-    public void setRentTime(String rentTime) {
-        this.rentTime = rentTime;
-    }
-
-    public String getReturnAddress() {
-        return returnAddress;
-    }
-
-    public void setReturnAddress(String returnAddress) {
-        this.returnAddress = returnAddress;
-    }
-
-    public String getReturnTime() {
-        return returnTime;
-    }
-
-    public void setReturnTime(String returnTime) {
-        this.returnTime = returnTime;
-    }
-
-    public String getValidityFromDate() {
-        return validityFromDate;
-    }
-
-    public void setValidityFromDate(String validityFromDate) {
-        this.validityFromDate = validityFromDate;
-    }
-
-    public String getValidityThruDate() {
-        return validityThruDate;
-    }
-
-    public void setValidityThruDate(String validityThruDate) {
-        this.validityThruDate = validityThruDate;
-    }
-
-    public double getWgsLatitude() {
-        return wgsLatitude;
-    }
-
-    public void setWgsLatitude(double wgsLatitude) {
-        this.wgsLatitude = wgsLatitude;
-    }
-
-    public double getWgsLongitude() {
-        return wgsLongitude;
-    }
-
-    public void setWgsLongitude(double wgsLongitude) {
-        this.wgsLongitude = wgsLongitude;
-    }
-
-    public List<IdCardPhotoListBean> getIdCardPhotoList() {
-        return idCardPhotoList;
-    }
-
-    public void setIdCardPhotoList(List<IdCardPhotoListBean> idCardPhotoList) {
-        this.idCardPhotoList = idCardPhotoList;
-    }
-
-    public List<ScenePhotoListBean> getScenePhotoList() {
-        return scenePhotoList;
-    }
-
-    public void setScenePhotoList(List<ScenePhotoListBean> scenePhotoList) {
-        this.scenePhotoList = scenePhotoList;
-    }
-
-    public static class IdCardPhotoListBean {
+    public static class BizPhotoDTOListBean {
         /**
          * order_number : 0
          * photo_name : 业务照片
@@ -308,41 +361,4 @@ public class WorkAddRegistGson {
             this.photo_url = photo_url;
         }
     }
-
-    public static class ScenePhotoListBean {
-        /**
-         * order_number : 0
-         * photo_name : 业务照片
-         * photo_url : https://baidu.com
-         */
-
-        private int order_number;
-        private String photo_name;
-        private String photo_url;
-
-        public int getOrder_number() {
-            return order_number;
-        }
-
-        public void setOrder_number(int order_number) {
-            this.order_number = order_number;
-        }
-
-        public String getPhoto_name() {
-            return photo_name;
-        }
-
-        public void setPhoto_name(String photo_name) {
-            this.photo_name = photo_name;
-        }
-
-        public String getPhoto_url() {
-            return photo_url;
-        }
-
-        public void setPhoto_url(String photo_url) {
-            this.photo_url = photo_url;
-        }
-    }
-
 }

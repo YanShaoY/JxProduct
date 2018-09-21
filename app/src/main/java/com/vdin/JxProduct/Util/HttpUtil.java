@@ -41,7 +41,7 @@ public class HttpUtil {
     }
 
     //post请求
-    public static void postRequest(String url, Map<String, Object> params, okhttp3.Callback callback) {
+    public static void postRequest(String url, Object params, okhttp3.Callback callback) {
         RequestBody body = addParamToJsonBody(params);
         Request request = new Request.Builder()
                 .url(url)
@@ -51,7 +51,7 @@ public class HttpUtil {
     }
 
     // put请求
-    public static void putRequest(String url, Map<String, Object> params, okhttp3.Callback callback) {
+    public static void putRequest(String url, Object params, okhttp3.Callback callback) {
         RequestBody body = addParamToJsonBody(params);
         Request request = new Request.Builder()
                 .url(url)
@@ -61,7 +61,7 @@ public class HttpUtil {
     }
 
     // delete请求
-    public static void deleteRequest(String url, Map<String, Object> params, okhttp3.Callback callback) {
+    public static void deleteRequest(String url, Object params, okhttp3.Callback callback) {
         RequestBody body = addParamToJsonBody(params);
         Request request = new Request.Builder()
                 .url(url)
@@ -97,7 +97,7 @@ public class HttpUtil {
         return builder.build();
     }
 
-    private static RequestBody addParamToJsonBody(Map<String, Object>map) {
+    private static RequestBody addParamToJsonBody(Object map) {
         if (map != null) {
             Gson gson = new Gson();
             String json = gson.toJson(map);

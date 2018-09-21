@@ -1,8 +1,8 @@
 package com.vdin.JxProduct.Service;
 
+import com.vdin.JxProduct.API.MetaDataApiRequest;
 import com.vdin.JxProduct.API.WorkApiRequest;
 import com.vdin.JxProduct.Model.WorkRegistAddPicInfo;
-import com.vdin.JxProduct.OSSService.FileUtils;
 import com.vdin.JxProduct.Util.StringUtils;
 
 import java.util.ArrayList;
@@ -18,73 +18,77 @@ import java.util.concurrent.Executors;
  */
 public class OssPhotoUpLoadService {
 
-    public static ArrayList<WorkRegistAddPicInfo> upLoadPhoto(final ArrayList<WorkRegistAddPicInfo> photos) {
+    public static void upLoadPhoto(final ArrayList<WorkRegistAddPicInfo> photos,MetaDataApiRequest.NetWorkCallBack callBack) {
 
-        // 创建线程池 最多支持9个子线程
-        ExecutorService exec = Executors.newFixedThreadPool(9);
-        // 线程计数
-        final CountDownLatch mCountDownLatch = new CountDownLatch(photos.size());
-        // 存储上传错误图片列表
-        ArrayList<Integer> failPics = new ArrayList<>();
+        Runnable runnable = () -> {
 
-        //有图片上传图片
-        if (photos.size() > 0) {
-            //上传图片
-            for (int i = 0; i < photos.size(); i++) {
-                // 记录位置
-                int position = i;
-                // 创建图片上传的task
-                Runnable upTask = new Runnable() {
-                    @Override
-                    public void run() {
-                        // 获取图片信息
-                        WorkRegistAddPicInfo picInfo = photos.get(position);
-                        //判断图片是否已经上传
-                        if (StringUtils.isEmpty(picInfo.url)) {
-                            //如果为空, 上传图片
-                            WorkApiRequest.upLoadPhoto(picInfo.path, position,(isSuccess, object) -> {
-                                // 获取返回信息
-                                HashMap<String, Object> map = (HashMap<String, Object>) object;
-                                // 位置
-                                int index = (int) map.get("index");
-                                // 是否成功
-                                if (isSuccess) {
+            // 创建线程池 最多支持9个子线程
+            ExecutorService exec = Executors.newFixedThreadPool(9);
+            // 线程计数
+            final CountDownLatch mCountDownLatch = new CountDownLatch(photos.size());
+            // 存储上传错误图片列表
+            ArrayList<Integer> failPics = new ArrayList<>();
 
-                                    String url = (String) map.get("netUrl");
-                                    photos.get(index).url = url;
+            //有图片上传图片
+            if (photos.size() > 0) {
+                //上传图片
+                for (int i = 0; i < photos.size(); i++) {
+                    // 记录位置
+                    int position = i;
+                    // 创建图片上传的task
+                    Runnable upTask = new Runnable() {
+                        @Override
+                        public void run() {
+                            // 获取图片信息
+                            WorkRegistAddPicInfo picInfo = photos.get(position);
+                            //判断图片是否已经上传
+                            if (StringUtils.isEmpty(picInfo.url)) {
+                                //如果为空, 上传图片
+                                WorkApiRequest.upLoadPhoto(picInfo.path, position, (isSuccess, object) -> {
+                                    // 获取返回信息
+                                    HashMap<String, Object> map = (HashMap<String, Object>) object;
+                                    // 位置
+                                    int index = (int) map.get("index");
+                                    // 是否成功
+                                    if (isSuccess) {
 
-                                } else {
-                                    failPics.add(index);
-                                }
+                                        String url = (String) map.get("netUrl");
+                                        photos.get(index).url = url;
+
+                                    } else {
+                                        failPics.add(index);
+                                    }
+
+                                    mCountDownLatch.countDown();
+
+                                });
+
+                            } else {
 
                                 mCountDownLatch.countDown();
-
-                            });
-
-                        }else {
-
-                            mCountDownLatch.countDown();
+                            }
                         }
-                    }
-                };
-                exec.submit(upTask);
+                    };
+                    exec.submit(upTask);
+                }
             }
-        }
 
-        try {
-            mCountDownLatch.await();
-            // 关闭线程池
-            exec.shutdown();
+            try {
+                mCountDownLatch.await();
+                // 关闭线程池
+                exec.shutdown();
 
-            if (failPics.size() > 0) {
-                return null;
-            } else {
-                return photos;
+                if (failPics.size() > 0) {
+                    callBack.completeBlock(false,photos);
+                } else {
+                    callBack.completeBlock(true,photos);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+
+        };
+        new Thread(runnable).start();
     }
 
 }

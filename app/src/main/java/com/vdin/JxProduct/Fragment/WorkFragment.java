@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.vdin.JxProduct.Activity.HistoryActivity;
 import com.vdin.JxProduct.Activity.IdCardReadActivity;
 import com.vdin.JxProduct.R;
 
@@ -86,6 +87,8 @@ public class WorkFragment extends BaseFragment {
     @OnClick(R.id.lv_history)
     public void onLvHistoryClicked() {
 
+        Intent intent = new Intent(getActivity(), HistoryActivity.class);
+        getActivity().startActivity(intent);
     }
 
     /**

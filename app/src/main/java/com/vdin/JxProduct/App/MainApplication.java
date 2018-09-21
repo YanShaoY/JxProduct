@@ -15,7 +15,6 @@ public class MainApplication extends Application{
         super.onCreate();
         context = getApplicationContext();
         LitePal.initialize(this);
-
     }
 
     public static Context getContext() {

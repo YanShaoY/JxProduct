@@ -5,4 +5,34 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorbackground">#eff3f9</color>
 
+    <!--透明色-->
+    <color name="clearcolor">#00000000</color>
+    <!--白色-->
+    <color name="white">#ffffff</color>
+    <!--黑色-->
+    <color name="black">#000</color>
+    <!--tabbar-->
+    <color name="tabbar_nomal">#ffb2dafc</color>
+    <color name="tabbar_selected">#ff1271f0</color>
+    <!--按钮获得焦点-->
+    <color name="btn_hasfocus">#ebebeb</color>
+    <!--nfc标题颜色-->
+    <color name="nfc_tit">#696969</color>
+    <!-- dialog-->
+    <color name="dialog_ts">#69b978</color>
+    <color name="dialog_content">#b9b9cd</color>
+    <color name="btn_nomorlbg">#ff6464</color>
+    <color name="btn_selectbg">#de5252</color>
+    <color name="btns_nomorlbg">#69b978</color>
+    <color name="btns_selectbg">#5ca268</color>
+    <color name="tv_nomorlwz">#ffffff</color>
+
+
+    <color name="works_bg">#ebf5ff</color>
+
+    <color name="shezhi_lsjyx">#e4e4e4</color>//所有线颜色
+
+    <color name="txt_timer">#C0C0C0</color>
+    <color name="txt_nomal">#48D1CC</color>
+
 </resources>

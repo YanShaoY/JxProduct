@@ -19,6 +19,7 @@ import com.vdin.JxProduct.OSSService.PhotoUtils;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Util.StringUtils;
 import com.vdin.JxProduct.Util.ToolUtil;
+import com.vdin.JxProduct.View.GAConfirmDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,7 +63,6 @@ public class IdCardReadActivity extends BaseActivity {
         setHeaderleftTurnBack("");
         setHeaderTitle("身份验证");
 
-        // TODO 测试数据装载
         testData();
 
     }
@@ -178,6 +178,23 @@ public class IdCardReadActivity extends BaseActivity {
     }
 
     /**
+     * 重写父类返回按钮方法
+     */
+    @Override
+    protected void backButtonAction() {
+        GAConfirmDialog dialog = new GAConfirmDialog(this, GAConfirmDialog.DialogStyle.DEFAULT);
+        dialog.setupTitle("确定退出?", "#ff6464")
+                .tip("退出后将丢失已录入信息")
+                .isShowSingleButton(false)
+                .bgIcon(R.mipmap.ask)
+                .sure(v -> {
+                    finish();
+                })
+                .show();
+
+    }
+
+    /**
      * 界面注销时 删除本地图片
      */
     @Override
@@ -186,6 +203,8 @@ public class IdCardReadActivity extends BaseActivity {
         if (StringUtils.isEmpty(scenePhotoUrl)){
             FileUtils.delFileByLocalPath(scenePhotoUrl);
         }
+
+        scenePhotoUrl = null;
 
         super.onDestroy();
     }

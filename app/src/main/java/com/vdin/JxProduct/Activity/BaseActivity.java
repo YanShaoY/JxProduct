@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vdin.JxProduct.R;
+import com.vdin.JxProduct.Util.ActivityConllector;
 import com.vdin.JxProduct.Util.ToolUtil;
 
 public class BaseActivity extends AppCompatActivity {
@@ -43,8 +44,17 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+        ActivityConllector.addActivity(this);
     }
 
+    /**
+     * 界面注销时调用的方法
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityConllector.removeActivity(this);
+    }
     /**
      * 设置导航栏标题
      * @param title 导航栏的标题
@@ -66,16 +76,21 @@ public class BaseActivity extends AppCompatActivity {
         view.setVisibility(View.VISIBLE);
         if (view instanceof Button) {
             ((Button) view).setText(btTitle);
-            view.setOnClickListener(headeronclick);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    backButtonAction();
+                }
+            });
         }
     }
 
-    // 返回按钮点击响应事件
-    View.OnClickListener headeronclick = new View.OnClickListener() {
-        public void onClick(View v) {
-            finish();
-        }
-    };
+    /**
+     * 返回按钮点击响应事件
+     */
+    protected void backButtonAction(){
+        finish();
+    }
 
     // 设置返回按钮文字大小
     protected void setHeaderleftTurnBackWZ(int sp) {
@@ -243,6 +258,15 @@ public class BaseActivity extends AppCompatActivity {
         }
         return super.dispatchTouchEvent(ev);
     }
+
+    /**
+     * 点击手机返回按键
+     */
+    @Override
+    public void onBackPressed() {
+        backButtonAction();
+    }
+
 
 }
 

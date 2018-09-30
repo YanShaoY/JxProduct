@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import com.vdin.JxProduct.Activity.GuideActivity;
 import com.vdin.JxProduct.Activity.HomeActivity;
 import com.vdin.JxProduct.Activity.MainActivity;
+import com.vdin.JxProduct.OSSService.PermissionUtil;
 import com.vdin.JxProduct.Service.MetaDataService;
 import com.vdin.JxProduct.Util.LaunchUtil;
 
@@ -22,6 +23,9 @@ public class LaunchActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //加载启动界面
         setContentView(R.layout.activity_launch);
+
+        // 权限申请
+       PermissionUtil.grantNeedPermission(this);
 
         //设置等待时间，单位为毫秒
         Integer time = 1500;
@@ -57,8 +61,13 @@ public class LaunchActivity extends AppCompatActivity {
             }
         }, time);
 
-        //获取元数据
-        MetaDataService.getInstance().initMetadata();
+
+        boolean aaa = PermissionUtil.checkExternalStorage(this);
+        if (aaa){
+            //获取元数据
+            MetaDataService.getInstance().initMetadata();
+        }
+
 
     }
 

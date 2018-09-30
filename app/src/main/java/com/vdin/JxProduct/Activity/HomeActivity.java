@@ -37,7 +37,9 @@ public class HomeActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.btn_register:
 
+                //获取元数据
                 MetaDataService.getInstance().initMetadata();
+
                 Intent activationActivity = new Intent(HomeActivity.this,
                         ActivationActivity.class);
                 startActivity(activationActivity);
@@ -46,7 +48,9 @@ public class HomeActivity extends BaseActivity {
 
             case R.id.btn_login:
 
+                //获取元数据
                 MetaDataService.getInstance().initMetadata();
+
                 Intent loginActivity = new Intent(HomeActivity.this,
                         LoginActivity.class);
                 startActivity(loginActivity);

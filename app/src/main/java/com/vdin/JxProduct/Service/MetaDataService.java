@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.vdin.JxProduct.API.MetaDataApiRequest;
 import com.vdin.JxProduct.App.MainApplication;
 import com.vdin.JxProduct.Gson.MetaDataResponse;
+import com.vdin.JxProduct.OSSService.PermissionUtil;
+import com.vdin.JxProduct.Util.ActivityConllector;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -235,6 +237,7 @@ public class MetaDataService {
     public String getMetaDataURLForRel(String rel) {
 
         List<MetaDataResponse.CollectionBean.LinksBean> linksBeanList = getMetaDataLinks();
+
         if (linksBeanList == null || linksBeanList.size() == 0) {
             return null;
         }

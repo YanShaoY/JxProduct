@@ -51,6 +51,11 @@ public class PermissionUtil {
         return true;
     }
 
+    /**
+     * 申请需要的所有的权限
+     * @param activity
+     * @return
+     */
     public static boolean grantNeedPermission(Activity activity) {
         List<String> permissionList = new ArrayList<String>();
         int i = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);

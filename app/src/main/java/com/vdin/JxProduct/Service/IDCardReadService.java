@@ -1,21 +1,22 @@
 package com.vdin.JxProduct.Service;
 
 import android.app.Activity;
-import android.app.Application;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.nfc.NfcAdapter;
 import android.nfc.tech.NfcB;
-import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.readTwoGeneralCard.ActiveCallBack;
@@ -23,16 +24,24 @@ import com.readTwoGeneralCard.EidUserInfo;
 import com.readTwoGeneralCard.OTGReadCardAPI;
 import com.readTwoGeneralCard.PassportInfo;
 import com.readTwoGeneralCard.Serverinfo;
+import com.vdin.JxProduct.OSSService.BitmapUtil;
+import com.vdin.JxProduct.OSSService.DateUtils;
+import com.vdin.JxProduct.OSSService.PermissionUtil;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 /**
  * @开发者 YanSY
  * @日期 2018/9/28
  * @描述 Vdin成都研发部
  */
-public class IDCardReadService implements ActiveCallBack,Application.ActivityLifecycleCallbacks{
+public class IDCardReadService implements ActiveCallBack {
 
     /* 公共参数定义 */
 
@@ -49,8 +58,6 @@ public class IDCardReadService implements ActiveCallBack,Application.ActivityLif
     public int readMode;
     // 本类线程处理器
     MyHandler myHandler;
-    // 身份信息模型
-    public Identityinfo identityinfo;
 
     // 私有化 读卡接口
     private OTGReadCardAPI readCardAPI;
@@ -59,7 +66,7 @@ public class IDCardReadService implements ActiveCallBack,Application.ActivityLif
 
     // 私有化 OTG接收器
     private BroadcastReceiver myOTGReceiver;
-    
+
     // 私有化 NFC 适配器
     private NfcAdapter nfcAdapter;
     // NFC 状态 1:正常 2:无NFC 3:未打开NFC
@@ -73,22 +80,27 @@ public class IDCardReadService implements ActiveCallBack,Application.ActivityLif
     // 私有化 读卡意图
     private Intent onPacNewIntent;
 
+    /*********************************************构造器和ACtivity需调用的方法**************************************************/
+
     /**
      * 构造器
      *
      * @param activity 句柄上下文
-     * @param block 服务回调
+     * @param block    服务回调
      */
     public IDCardReadService(Activity activity, IdCardServiceBlock block) {
+
         this.myActivity = activity;
-        myActivity.getApplication().registerActivityLifecycleCallbacks(this);
         this.myBlock = block;
-        // 初始化默认参数
-        initParameter();
+        // 读卡模式 NFC
+        readMode = 1;
+        // 内部线程处理器
+        myHandler = new MyHandler(this);
+
         // 初始化读卡服务接口
         initReadCardAPI();
         // 设置OTG 监听
-        registerUDiskReceiver();
+//        registerUDiskReceiver();
         // 初始化 NFC扫描
         initNFC();
 
@@ -96,24 +108,25 @@ public class IDCardReadService implements ActiveCallBack,Application.ActivityLif
 
     /**
      * 开始身份证读取
-     * @return 
+     *
+     * @return
      */
-    public boolean startToReadIdCard(){
+    public boolean startToReadIdCard() {
 
-        if (readMode == 1){
+        if (readMode == 1) {
 
-            if (nfcAdapter == null){
+            if (nfcAdapter == null) {
                 return false;
-            }else {
-                nfcAdapter.enableForegroundDispatch(myActivity,pendingIntent,new IntentFilter[]{intentFilter},nfcTechLists);
+            } else {
+                nfcAdapter.enableForegroundDispatch(myActivity, pendingIntent, new IntentFilter[]{intentFilter}, nfcTechLists);
                 return true;
             }
 
 
-        }else if (readMode == 2){
+        } else if (readMode == 2) {
             // TODO OTG阅读
             Log.d(TAG, "startToReadIdCard: ");
-        }else {
+        } else {
 
             return false;
         }
@@ -123,42 +136,59 @@ public class IDCardReadService implements ActiveCallBack,Application.ActivityLif
 
     /**
      * 停止身份证读取
+     *
      * @return
      */
     public boolean stopToReadIdCard() {
 
-        if (readMode == 1){
+        if (readMode == 1) {
 
-            if (nfcAdapter == null){
+            if (nfcAdapter == null) {
                 return false;
-            }else {
+            } else {
                 nfcAdapter.disableForegroundDispatch(myActivity);
                 return true;
             }
 
-        }else if (readMode == 2){
+        } else if (readMode == 2) {
             // TODO OTG阅读
             Log.d(TAG, "startToReadIdCard: ");
 
-        }else {
+        } else {
             return false;
         }
         return false;
     }
 
+
+    /* myActivity 生命周期回调 */
+
     /**
-     * 初始化默认参数
+     * 响应新的intent时调用
+     *
+     * @param intent
      */
-    private void initParameter() {
-        // 读卡模式 NFC
+    public void onNewIntent(Intent intent) {
+        onPacNewIntent = intent;
         readMode = 1;
-        // 内部线程处理器
-        myHandler = new MyHandler(this);
-        // 身份信息模型
-        identityinfo = new Identityinfo();
-        identityinfo.reuse = "false";
+        myHandler.sendEmptyMessageDelayed(readMode, 0);
     }
 
+    /**
+     * 界面注销时调用
+     *
+     * @param activity
+     */
+    public void onActivityDestroyed(Activity activity) {
+        if (activity.equals(myActivity)) {
+            stopToReadIdCard();
+            this.myActivity = null;
+            myHandler.removeCallbacksAndMessages(null);
+
+        }
+    }
+
+    /********************************************* 私有初始化方法 ACtivity不用管 **************************************************/
     /**
      * 初始化读卡服务接口
      */
@@ -191,18 +221,21 @@ public class IDCardReadService implements ActiveCallBack,Application.ActivityLif
 
     }
 
-    public void initNFC(){
+    /**
+     * 初始化NFC读取
+     */
+    private void initNFC() {
 
         // 设置NFC适配器
         nfcAdapter = NfcAdapter.getDefaultAdapter(myActivity);
 
-        if (nfcAdapter == null){
+        if (nfcAdapter == null) {
 
             // 判断是否API是否已打开 可能存在OTG正在读取情况
-            if (!readCardAPI.isPiccOpenFlag()){
+            if (!readCardAPI.isPiccOpenFlag()) {
                 // 未打开 且模式为NFC 返回失败信息
-                if (readMode == 1){
-                    myBlock.onFailure(this,readMode,102);
+                if (readMode == 1) {
+                    myBlock.onFailure(this, readMode, 102);
                 }
                 // 切换NFC状态为无
                 nfcType = 2;
@@ -213,9 +246,9 @@ public class IDCardReadService implements ActiveCallBack,Application.ActivityLif
 
 
         // 初始化等待意图
-        Intent newItent = new Intent(myActivity,myActivity.getClass());
+        Intent newItent = new Intent(myActivity, myActivity.getClass());
         newItent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        pendingIntent = PendingIntent.getActivity(myActivity,0,newItent,0);
+        pendingIntent = PendingIntent.getActivity(myActivity, 0, newItent, 0);
 
         // 初始化意图过滤器
         intentFilter = new IntentFilter(nfcAdapter.ACTION_TECH_DISCOVERED);
@@ -228,15 +261,14 @@ public class IDCardReadService implements ActiveCallBack,Application.ActivityLif
                 }
         };
 
-        if (nfcAdapter.isEnabled()){
+        if (nfcAdapter.isEnabled()) {
             nfcType = 1;
-        }else {
+        } else {
             nfcType = 3;
-            myBlock.onFailure(this,readMode,103);
+            myBlock.onFailure(this, readMode, 103);
         }
 
     }
-
 
     /* OTG相关实现 */
 
@@ -326,8 +358,183 @@ public class IDCardReadService implements ActiveCallBack,Application.ActivityLif
         return receiver;
     }
 
+    /*********************************************    MyHandler 事件回调响应  **************************************************/
 
-    /* ActiveCallBack 相关接口函数 */
+    /**
+     * MyHandler-handleMessage 响应事件
+     *
+     * @param msg 收到的消息
+     */
+    public void handleMessageAction(Message msg) {
+
+        // 返回状态码
+        int code = 0;
+
+        // 判断读卡模式进行读卡
+        switch (msg.what) {
+            // NFC
+            case 1:
+                code = readCardAPI.NfcReadCard(appKeyFactory, onPacNewIntent);
+                break;
+            // OTG
+            case 2:
+                // TODO OTG 读卡
+//                code = readCardAPI.OTGReadCard(appKeyFactory,)
+                break;
+
+            // Other
+            default:
+                break;
+        }
+
+        // 判断状态码 进行相应操作
+        switch (code) {
+            case 0:
+                myBlock.onFailure(this, readMode, 10100);
+                break;
+
+            case 2:
+                myBlock.onFailure(this, readMode, 10102);
+                break;
+
+            case 41:
+                myBlock.onFailure(this, readMode, 10141);
+                break;
+
+            case 42:
+                myBlock.onFailure(this, readMode, 10142);
+                break;
+
+            case 43:
+                myBlock.onFailure(this, readMode, 10143);
+                break;
+
+            case 90:
+                readCardInfo();
+                break;
+
+        }
+
+    }
+
+    /**
+     * 读取卡片信息
+     */
+    private void readCardInfo() {
+
+        Identityinfo identityinfo = new Identityinfo();
+
+        //是否是查询数据
+        identityinfo.reuse = "false";
+
+        //身份证号
+        identityinfo.customer_identification_number = readCardAPI.CardNo().trim();
+
+        //姓名
+        identityinfo.customer_name = readCardAPI.Name().trim();
+
+        //身份证有效起始日期
+        String activity = readCardAPI.Activity();
+        identityinfo.customer_identity_card_validity_from_date = "";
+
+        //身份证有效结束日期
+        identityinfo.customer_identity_card_validity_thru_date = "";
+
+        if (!TextUtils.isEmpty(activity)) {
+            String[] activitys = activity.split("-");
+            if (activitys != null && activitys.length >= 1) {
+                if (!TextUtils.isEmpty(activitys[0])) {
+                    identityinfo.customer_identity_card_validity_from_date = DateUtils.getYMDDateStrByYmd(activitys[0]);
+                }
+                if (!TextUtils.isEmpty(activitys[1]) && !activitys[1].equals("长期")) {
+                    identityinfo.customer_identity_card_validity_thru_date = DateUtils.getYMDDateStrByYmd(activitys[1]);
+                }
+            }
+        }
+
+        //身份证签发机关
+        identityinfo.customer_identity_card_issuing_authority_name = readCardAPI.Police();
+
+        //身份证性别代号
+        identityinfo.customer_identity_card_gender_code = readCardAPI.SexL().equals("男") ? "1" : "2";
+
+        //身份证民族代号
+        identityinfo.customer_identity_card_ethnicity_code = NationUtil.nationTransfor(readCardAPI.NationL().trim() + "族");
+
+        //身份证地址
+        identityinfo.customer_identity_card_address = readCardAPI.Address().trim();
+
+        //身份证的生日信息
+        identityinfo.customer_identity_card_birth_date = readCardAPI.Born().substring(0, 4) + "-" + readCardAPI.Born().substring(4, 6) + "-" + readCardAPI.Born().substring(6, 8);
+
+        //身份证头像
+        String headAddress = "";
+        if (readCardAPI.GetImage() != null) {
+            headAddress = bytesToImageFile(readCardAPI.GetImage());
+        }
+        identityinfo.customer_identity_card_portraits = headAddress;
+
+        //证件类型 1:读卡器识别,2:手工输入身份证号,3:手工输入手机号识别 ,
+        identityinfo.idtype = "1";
+
+        //入住门卡号
+        identityinfo.check_in_card_num = NFCUtil.ChangeSNID(readCardAPI.GetSNID().trim());
+
+        /* 人员备案添加 */
+        //身份证性别
+        identityinfo.customer_identity_card_gender = readCardAPI.SexL().trim();
+
+        //身份证民族
+        identityinfo.customer_identity_card_ethnicity = readCardAPI.NationL().trim();
+
+        //OTG外接nfc添加
+        identityinfo.headImgData = readCardAPI.GetImage();
+
+        readCardAPI.release();
+
+        myBlock.completeBlock(this, readMode, identityinfo);
+
+    }
+
+    /**
+     * 图片转换
+     *
+     * @param bytes 图片数据
+     * @return 图片本地路径
+     */
+    private String bytesToImageFile(byte[] bytes) {
+        // 请求权限 存取权限
+        if (!PermissionUtil.checkExternalStorage(myActivity)){
+            return "";
+        }
+
+        try {
+//            File file = new File(FileUtils.PIC_TEMP_DIR + "zp.jpg");
+            Bitmap bitmap = BitmapUtil.bytes2Bimap(bytes);
+
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String imageFileName = "JPEG_" + timeStamp + "_";
+            File storageDir = myActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES); // 放在这个目录较为安全，只要手机不被root，该目录就无法被访问
+            File f = null;
+            try {
+                f = File.createTempFile(
+                        imageFileName,  /* prefix */
+                        ".jpg",         /* suffix */
+                        storageDir      /* directory */
+                );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String filePath = f.getPath();
+            BitmapUtil.saveBitmap(bitmap, filePath);
+            return filePath;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    /********************************************* ActiveCallBack 相关接口函数 **************************************************/
 
     /**
      * 获取EID卡片PIN码，因为在获取EID签名的时候只有PIN码授权后才可以读卡片中签名信息
@@ -392,64 +599,22 @@ public class IDCardReadService implements ActiveCallBack,Application.ActivityLif
         myHandler.sendEmptyMessageDelayed(readMode, 0);
     }
 
-    /* myActivity 生命周期回调 */
-
-    @Override
-    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        Log.d(TAG, "onActivityCreated: ");
-    }
-
-    @Override
-    public void onActivityStarted(Activity activity) {
-        Log.d(TAG, "onActivityStarted: ");
-    }
-
-    @Override
-    public void onActivityResumed(Activity activity) {
-        Log.d(TAG, "onActivityResumed: ");
-    }
-
-    @Override
-    public void onActivityPaused(Activity activity) {
-        Log.d(TAG, "onActivityPaused: ");
-    }
-
-    @Override
-    public void onActivityStopped(Activity activity) {
-        Log.d(TAG, "onActivityStopped: ");
-    }
-
-    @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-        Log.d(TAG, "onActivitySaveInstanceState: ");
-    }
-
-    @Override
-    public void onActivityDestroyed(Activity activity) {
-        Log.d(TAG, "onActivityDestroyed: ");
-    }
-
-    /* 内部类定义 */
+    /********************************************* 内部类定义 **************************************************/
 
     /**
      * 内部线程处理器
      */
     private static class MyHandler extends Handler {
 
-        //
+        // 存储传入的服务对象
         private final WeakReference<IDCardReadService> myService;
 
-        /**
-         * 构建函数
-         *
-         * @param service 服务实例化
-         */
         public MyHandler(IDCardReadService service) {
             myService = new WeakReference<>(service);
         }
 
         /**
-         * 发送消息
+         * 收到消息
          *
          * @param msg 消息
          */
@@ -457,10 +622,9 @@ public class IDCardReadService implements ActiveCallBack,Application.ActivityLif
         public void handleMessage(Message msg) {
             // 打印消息
             Log.d(TAG, "handleMessage: " + msg);
+            // 获取执行服务
             if (myService.get() != null) {
-                // TODO 执行传入消息事件
-                Error error = new Error();
-
+                myService.get().handleMessageAction(msg);
             }
         }
     }
@@ -565,27 +729,81 @@ public class IDCardReadService implements ActiveCallBack,Application.ActivityLif
         };
     }
 
+    /**
+     * 民族代码与名字切换
+     */
+    public static class NationUtil {
+        static HashMap<String, String> min = new HashMap<>();
+        static String[] cn = {"汉族", "蒙古族", "回族", "藏族", "维吾尔族", "苗族", "彝族", "壮族", "布依族", "朝鲜族", "满族", "侗族", "瑶族", "白族", "土家族", "哈尼族", "哈萨克族", "傣族", "黎族", "傈僳族", "佤族", "畲族", "高山族", "拉祜族", "水族", "东乡族", "纳西族", "景颇族", "柯尔克孜族", "土族", "达斡尔族", "仫佬族", "羌族", "布朗族", "撒拉族", "毛南族", "仡佬族", "锡伯族", "阿昌族", "普米族", "塔吉克族", "怒族", "乌孜别克族", "俄罗斯族", "鄂温克族", "德昂族", "保安族", "裕固族", "京族", "塔塔尔族", "独龙族", "鄂伦春族", "赫哲族", "门巴族", "珞巴族", "基诺族", "其他"};
+        static String[] en = {"HA", "MG", "HU", "ZA", "UG", "MH", "YI", "ZH", "BY", "CS", "MA", "DO", "YA", "BA", "TJ", "HN", "KZ", "DA", "LI", "LS", "VA", "SH", "GS", "LH", "SU", "DX", "NX", "JP", "KG", "TU", "DU", "ML", "QI", "BL", "SL", "MN", "GL", "XB", "AC", "PM", "TA", "NU", "UZ", "RS", "EW", "DE", "BN", "YG", "GI", "TT", "DR", "OR", "HZ", "MB", "LB", "JN", "ZZ"};
+
+        public static String nationTransfor(String nation_name) {
+            min.clear();
+            for (int i = 0; i < cn.length; i++) {
+                min.put(cn[i], en[i]);
+            }
+            return min.get(nation_name);
+        }
+    }
+
+    /**
+     * 入住门卡号切换
+     */
+    public static class NFCUtil {
+
+        public static String ChangeSNID(String snid) {
+            String nid = "";
+            int st = 0;
+            int se = 2;
+            ArrayList<String> ss = new ArrayList<>();
+            for (int i = 0; i < (snid.length() / 2); i++) {
+                String s1 = snid.substring(i + st, i + se);
+                st++;
+                se++;
+                ss.add(s1);
+            }
+            for (int i = ss.size() - 1; i >= 0; i--) {
+                nid = nid + ss.get(i);
+            }
+            return nid;
+        }
+    }
+
+    /**
+     * 本类服务读卡回调接口
+     */
     public interface IdCardServiceBlock {
 
         /**
          * errorCode
          * 102 不支持NFC功能
          * 103 NFC未开启
+         * 10100 读卡错误
+         * 10102 接受数据超时
+         * 10141 读卡失败
+         * 10142 网络连接错误
+         * 10143 服务器繁忙
          */
 
         /**
          * 发生错误时回调
-         * @param service 服务
-         * @param readMode 发生错误的模式
+         *
+         * @param service   服务
+         * @param readMode  发生错误的模式
          * @param errorCode 错误信息
          */
-        void onFailure(IDCardReadService service,int readMode, int errorCode);
+        void onFailure(IDCardReadService service, int readMode, int errorCode);
 
         /**
-         * 自定义请求回调接口
+         * 身份证读卡回调
+         *
+         * @param service  服务
+         * @param readMode 发生错误的模式
+         * @param info     错误信息
          */
-        void completeBlock(boolean isSuccess, Object object);
+        void completeBlock(IDCardReadService service, int readMode, Identityinfo info);
     }
+
 
 }
 

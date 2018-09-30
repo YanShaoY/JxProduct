@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -197,6 +198,20 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
 
     }
 
+    /******************************************************** Activity 生命周期 ***********************************************************/
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        myService.startToReadIdCard();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        myService.onNewIntent(intent);
+    }
+
     /**
      * 界面注销时 删除本地图片
      */
@@ -206,21 +221,28 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
         if (StringUtils.isEmpty(scenePhotoUrl)){
             FileUtils.delFileByLocalPath(scenePhotoUrl);
         }
-
         scenePhotoUrl = null;
-
+        myService.onActivityDestroyed(this);
+        myService.stopToReadIdCard();
         super.onDestroy();
     }
 
+
+
+    /******************************************************** IDCardReadService.IdCardServiceBlock ***********************************************************/
+
+    // 错误回调
     @Override
     public void onFailure(IDCardReadService service, int readMode, int errorCode) {
-
+        Log.d("IDCardReadService", "onFailure: " + service.toString() + "readMode ：" +readMode + " errorCode :" + errorCode + "\n" );
     }
-
+    // 成功回调
     @Override
-    public void completeBlock(boolean isSuccess, Object object) {
-
+    public void completeBlock(IDCardReadService service, int readMode, IDCardReadService.Identityinfo info) {
+        Log.d("IDCardReadService", "onFailure: " + service.toString() + "readMode ：" +readMode + " info :" + info + "\n" );
+        Log.d("1111111", "completeBlock: ");
     }
+
 }
 
 

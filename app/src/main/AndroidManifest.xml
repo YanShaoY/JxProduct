@@ -2,12 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.vdin.JxProduct"
     android:versionCode="1"
-    android:versionName="1.0">
+    android:versionName="1.1">
 
     <!-- 权限设置列表 -->
-    <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="22" />
     <!-- 读取身份证信息 以前targetSdkVersion="22" -->
     <uses-permission android:name="android.permission.NFC" />
 
@@ -15,11 +12,14 @@
         android:name="android.hardware.nfc"
         android:required="true" />
 
+    <!-- 网络请求权限-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- 读写存储卡的权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <!-- 相机权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -55,12 +55,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activity.GuideActivity"
             android:theme="@style/TranslucentTheme" />
         <activity
             android:name=".Activity.HomeActivity"
-            android:theme="@style/TranslucentTheme" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".Activity.LoginActivity"
             android:theme="@style/TranslucentTheme"
@@ -96,7 +97,11 @@
             android:name=".Activity.HistorySearchActivity"
             android:theme="@style/TranslucentTheme"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".Activity.ResetPwdActivity"></activity>
+        <activity
+            android:name=".Activity.ResetPwdActivity"
+            android:theme="@style/TranslucentTheme"
+            android:windowSoftInputMode="adjustPan" />
+
     </application>
 
 </manifest>

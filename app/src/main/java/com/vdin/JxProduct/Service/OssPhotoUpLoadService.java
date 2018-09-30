@@ -1,6 +1,7 @@
 package com.vdin.JxProduct.Service;
 
 import com.vdin.JxProduct.API.MetaDataApiRequest;
+import com.vdin.JxProduct.API.NetWorkCallBack;
 import com.vdin.JxProduct.API.WorkApiRequest;
 import com.vdin.JxProduct.Model.WorkRegistAddPicInfo;
 import com.vdin.JxProduct.Util.StringUtils;
@@ -18,7 +19,7 @@ import java.util.concurrent.Executors;
  */
 public class OssPhotoUpLoadService {
 
-    public static void upLoadPhoto(final ArrayList<WorkRegistAddPicInfo> photos,MetaDataApiRequest.NetWorkCallBack callBack) {
+    public static void upLoadPhoto(final ArrayList<WorkRegistAddPicInfo> photos,NetWorkCallBack callBack) {
 
         Runnable runnable = () -> {
 

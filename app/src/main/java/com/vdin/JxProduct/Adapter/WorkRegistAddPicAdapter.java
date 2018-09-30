@@ -26,8 +26,6 @@ public class WorkRegistAddPicAdapter extends BaseAdapter {
     Context mContext;
     // 图片信息列表
     ArrayList<WorkRegistAddPicInfo> picInfoArr;
-    // 创建视图持有器
-    ViewHolder mHolder = null;
     // 视图点击事件监听
     View.OnClickListener clickListener;
 
@@ -89,10 +87,10 @@ public class WorkRegistAddPicAdapter extends BaseAdapter {
 
         // 使用Viewholder类的静态方法缓存控件，并返回缓存后的控件
         // 照片展示视图
-        ImageView photoImgView = (ImageView)mHolder.get(convertView,R.id.photo_img_view);
+        ImageView photoImgView = (ImageView)ViewHolder.get(convertView,R.id.photo_img_view);
         photoImgView.setTag(position);
         // 删除图片视图
-        ImageView deleteImgView = (ImageView)mHolder.get(convertView,R.id.delete_img_view);
+        ImageView deleteImgView = (ImageView)ViewHolder.get(convertView,R.id.delete_img_view);
         deleteImgView.setTag(position);
 
         // 设置照片展示

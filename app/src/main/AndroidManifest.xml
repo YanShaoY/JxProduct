@@ -5,6 +5,16 @@
     android:versionName="1.0">
 
     <!-- 权限设置列表 -->
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="22" />
+    <!-- 读取身份证信息 以前targetSdkVersion="22" -->
+    <uses-permission android:name="android.permission.NFC" />
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -45,7 +55,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Activity.GuideActivity"
             android:theme="@style/TranslucentTheme" />
@@ -67,11 +76,27 @@
             android:name=".Activity.InfoRegistActivity"
             android:theme="@style/TranslucentTheme"
             android:windowSoftInputMode="adjustPan" />
-
-        <activity android:name=".Activity.HistoryActivity"
+        <activity
+            android:name=".Activity.HistoryActivity"
             android:theme="@style/TranslucentTheme"
             android:windowSoftInputMode="adjustPan" />
-
+        <activity
+            android:name=".Activity.HistoryDetailActivity"
+            android:theme="@style/TranslucentTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Activity.ActivationActivity"
+            android:theme="@style/TranslucentTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Activity.SetPasswordActivity"
+            android:theme="@style/TranslucentTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Activity.HistorySearchActivity"
+            android:theme="@style/TranslucentTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".Activity.ResetPwdActivity"></activity>
     </application>
 
 </manifest>

@@ -22,7 +22,7 @@ public class ViewHolder {
      * @return 缓存后的控件（textView、imageView...等控件）
      */
     @SuppressWarnings("unchecked")
-    public static View get(View view, int id) {
+    public static <T extends View> T get(View view, int id) {
         // 获取itemView的ViewHolder对象，并将其转型为SparseArray<View>
         SparseArray<View> viewHolder = (SparseArray<View>) view.getTag();
         if (viewHolder == null) {
@@ -40,7 +40,7 @@ public class ViewHolder {
             viewHolder.put(id, childView);
         }
         // 返回缓存好的控件
-        return childView;
+        return (T) childView;
     }
 
 }

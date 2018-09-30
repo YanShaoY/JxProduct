@@ -1,9 +1,13 @@
 package com.vdin.JxProduct.db;
 
+import com.vdin.JxProduct.Util.DateUtil;
+
 import org.litepal.LitePal;
 import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class HistoryListDB extends LitePalSupport {
@@ -99,15 +103,56 @@ public class HistoryListDB extends LitePalSupport {
         this.chepai = chepai;
     }
 
+    /**
+     * 查询所有的数据
+     * @return
+     */
     public static List<HistoryListDB> selectAll(){
         return LitePal.findAll(HistoryListDB.class);
     }
 
+    /**
+     * 根据id查询数据
+     * @param id 记录ID
+     * @return
+     */
     public static HistoryListDB selectItem(String id){
-
         List<HistoryListDB> result = LitePal.where("mId = ?", id).find(HistoryListDB.class);
         if (result.size() <= 0)return null;
         return result.get(0);
     }
 
+    /**
+     * 根据页数查询数据
+     * @param page
+     * @return
+     */
+    public static List<HistoryListDB> selectListForPage(int page){
+
+        int offset = (page - 1) * 10;
+
+        // 获取时间
+        Date today = DateUtil.getTimesmorning();
+        Date threeDaysAgo = DateUtil.getDateBefore(today,-3);
+        String format = "yyyy-MM-dd HH:mm:ss";
+        String requestDateStr = DateUtil.getStringByFormat(threeDaysAgo,format);
+
+        List<HistoryListDB> result = LitePal.order("time desc")
+                .where("time >= ?",requestDateStr)
+                .limit(10)
+                .offset(offset)
+                .find(HistoryListDB.class);
+
+        return result;
+    }
+
+
+
 }
+
+
+
+
+
+
+

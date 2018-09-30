@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +16,7 @@ import com.vdin.JxProduct.OSSService.BitmapUtil;
 import com.vdin.JxProduct.OSSService.FileUtils;
 import com.vdin.JxProduct.OSSService.PhotoUtils;
 import com.vdin.JxProduct.R;
+import com.vdin.JxProduct.Service.IDCardReadService;
 import com.vdin.JxProduct.Util.StringUtils;
 import com.vdin.JxProduct.Util.ToolUtil;
 import com.vdin.JxProduct.View.GAConfirmDialog;
@@ -25,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class IdCardReadActivity extends BaseActivity {
+public class IdCardReadActivity extends BaseActivity implements IDCardReadService.IdCardServiceBlock{
 
     // 控件声明
     @BindView(R.id.card_number_edit)
@@ -45,6 +45,8 @@ public class IdCardReadActivity extends BaseActivity {
     private String scenePhotoUrl = "";
     // 存储本类实例
     public static Activity idCardActivity = null;
+    // 身份证读取服务
+    private IDCardReadService myService;
 
     /**
      * 视图创建方法
@@ -57,6 +59,7 @@ public class IdCardReadActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         idCardActivity = this;
+        myService = new IDCardReadService(this, this);
 
         fullScreen(this);
         setFitsSystemWindows(this, true);
@@ -207,6 +210,16 @@ public class IdCardReadActivity extends BaseActivity {
         scenePhotoUrl = null;
 
         super.onDestroy();
+    }
+
+    @Override
+    public void onFailure(IDCardReadService service, int readMode, int errorCode) {
+
+    }
+
+    @Override
+    public void completeBlock(boolean isSuccess, Object object) {
+
     }
 }
 

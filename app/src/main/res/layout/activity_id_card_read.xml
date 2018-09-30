@@ -273,7 +273,7 @@
         android:layout_marginLeft="21dp"
         android:layout_marginRight="21dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/ty_btn_selected"
+        android:background="@drawable/ty_btn_bgcolor"
         android:text="下一步"
         android:textColor="@drawable/ty_btn_wzcolor"
         android:textSize="16sp" />

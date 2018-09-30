@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg_work"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context=".Activity.ActivationActivity">
+
+    <!-- 导航栏-->
+    <include
+        android:id="@+id/incl_title"
+        layout="@layout/allbar_back" />
+
+    <!-- 中间输入框-->
+    <LinearLayout
+        android:id="@+id/Lv_zhong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:background="#00000000"
+        android:orientation="vertical"
+        android:paddingLeft="38dp"
+        android:paddingRight="38dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/incl_title">
+
+        <!-- 用户名-->
+        <RelativeLayout
+            android:id="@+id/activation_user_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/input_normal">
+
+            <EditText
+                android:id="@+id/user_name_edit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="#00000000"
+                android:hint="用户名"
+                android:maxLength="20"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="#ffffff"
+                android:textColorHint="#949ea8"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+        <!-- 备案验证码-->
+        <RelativeLayout
+            android:id="@+id/activation_verification_code"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@mipmap/input_normal">
+
+            <EditText
+                android:id="@+id/verification_code_edit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="#00000000"
+                android:hint="备案验证码"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#949ea8"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <!-- 下一步按钮-->
+    <Button
+        android:id="@+id/activation_button_next"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Lv_zhong"
+        android:layout_marginLeft="38dp"
+        android:layout_marginRight="38dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/ty_btn_bgcolor"
+        android:gravity="center"
+        android:text="下一步"
+        android:textColor="@drawable/ty_btn_wzcolor"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Lv_zhong" />
+
+    <!-- 底部提示布局-->
+
+    <!-- 重发验证码-->
+    <TextView
+        android:id="@+id/txt_GetPinCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="38dp"
+        android:layout_marginRight="38dp"
+        android:layout_marginTop="20dp"
+        android:clickable="false"
+        android:text="重发验证码"
+        android:textColor="@color/txt_nomal"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activation_button_next" />
+
+    <!-- underLine01-->
+    <!--<View-->
+    <!--android:id="@+id/regist_under_line_01"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:background="#1abaae"-->
+    <!--app:layout_constraintLeft_toLeftOf="@id/txt_GetPinCode"-->
+    <!--app:layout_constraintRight_toRightOf="@id/txt_GetPinCode"-->
+    <!--app:layout_constraintTop_toBottomOf="@id/txt_GetPinCode" />-->
+
+    <!-- 底部提示：-->
+    <TextView
+        android:id="@+id/txt_ts"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="38dp"
+        android:layout_marginRight="38dp"
+        android:layout_marginTop="20dp"
+        android:text="提示：请输入备案成功后发送的短信中所包含的验证码，如验证码遗失，请点击重发验证码。"
+        android:textColor="#949ea8"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_GetPinCode" />
+
+
+</android.support.constraint.ConstraintLayout>
+
+
+
+
+
+

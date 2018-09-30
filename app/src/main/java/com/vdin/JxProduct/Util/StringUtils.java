@@ -9,4 +9,13 @@ public class StringUtils {
             return false;
         }
     }
+
+    public static String cutStrToName(String name){
+
+        String countStr = name.substring(0,1);
+        for (int i = 0; i < name.length()-1; i++) {
+            countStr = countStr + "*";
+        }
+        return countStr;
+    }
 }

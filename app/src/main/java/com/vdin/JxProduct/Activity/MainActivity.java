@@ -1,5 +1,6 @@
 package com.vdin.JxProduct.Activity;
 
+import android.app.Application;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +28,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
 
         bottomTabBar
                 .init(getSupportFragmentManager())                        // 初始化方法，必须第一个调用；传入参数为V4包下的FragmentManager

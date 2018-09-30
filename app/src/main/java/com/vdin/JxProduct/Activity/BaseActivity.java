@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -53,6 +54,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(this.toString(), "onDestroy");
         ActivityConllector.removeActivity(this);
     }
     /**
@@ -108,16 +110,6 @@ public class BaseActivity extends AppCompatActivity {
      */
     public void showToastWithMessage(final String message) {
 
-//        Handler mainHandler = new Handler(Looper.getMainLooper());
-//        mainHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                //已在主线程中，可以更新UI
-//                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
-
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -139,21 +131,37 @@ public class BaseActivity extends AppCompatActivity {
      * @param message 进度弹窗内容
      */
     public void showProgressDialog(String message) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(mContext);
-            progressDialog.setMessage(message);
-            progressDialog.setCanceledOnTouchOutside(false);
-        }
-        progressDialog.show();
+
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                if (progressDialog == null) {
+                    progressDialog = new ProgressDialog(mContext);
+                    progressDialog.setCanceledOnTouchOutside(false);
+                }
+                progressDialog.setMessage(message);
+                progressDialog.show();
+
+            }
+        });
     }
 
     /**
      * 关闭进度对话框
      */
     public void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
+
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
+
+            }
+        });
     }
 
     /**
@@ -266,7 +274,6 @@ public class BaseActivity extends AppCompatActivity {
     public void onBackPressed() {
         backButtonAction();
     }
-
 
 }
 

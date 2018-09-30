@@ -10,4 +10,6 @@
     <!-- OSS上传服务地址-->
     <string name="oss_service_url">https://oss-cn-qingdao.aliyuncs.com</string>
 
+    <item name="dialog_tag" type="id">5201314</item>
+
 </resources>

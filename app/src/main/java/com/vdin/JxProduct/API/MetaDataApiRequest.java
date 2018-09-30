@@ -87,6 +87,7 @@ public class MetaDataApiRequest {
         if (StringUtils.isEmpty(url)) {
             MetaDataService.getInstance().initMetadata();
             callBack.completeBlock(false, "正在获取元数据");
+            return;
         }
 
         // 封装参数
@@ -117,31 +118,19 @@ public class MetaDataApiRequest {
             public void onResponse(Call call, Response response) throws IOException {
                 // 获取主线程
                 android.os.Handler mainHandle = new android.os.Handler(Looper.getMainLooper());
-                // 成功
-                if (response.isSuccessful()) {
+                // 获取body数据
+                String responseText = response.body().string();
+                // 判断body数据是否为空
+                if (!TextUtils.isEmpty(responseText)) {
 
-                    String responseText = response.body().string();
-                    if (!TextUtils.isEmpty(responseText)) {
-
-                        try {
-                            JSONObject jsonObject = new JSONObject(responseText);
-                            LoginDataResponse loginDataResponse = new Gson().fromJson(jsonObject.toString(), LoginDataResponse.class);
-                            mainHandle.post(() -> {
-                                callBack.completeBlock(true, loginDataResponse);
-                            });
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            mainHandle.post(() -> {
-                                callBack.completeBlock(false, "数据解析失败");
-                            });
-                        }
-
-                    }
-
-                } else { // 失败
+                    LoginDataResponse loginDataResponse = new Gson().fromJson(responseText, LoginDataResponse.class);
                     mainHandle.post(() -> {
-                        callBack.completeBlock(false, "网络请求失败");
+                        callBack.completeBlock(true, loginDataResponse);
+                    });
+
+                } else {
+                    mainHandle.post(() -> {
+                        callBack.completeBlock(false, "数据解析失败");
                     });
                 }
             }
@@ -159,14 +148,192 @@ public class MetaDataApiRequest {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String jsonString = response.body().string();
-                    callBack.completeBlock(true, jsonString);
+                // 获取主线程
+                android.os.Handler mainHandle = new android.os.Handler(Looper.getMainLooper());
+                // 获取body数据
+                String jsonString = response.body().string();
+                // 判断body数据是否为空
+                if (!TextUtils.isEmpty(jsonString)) {
+                    mainHandle.post(() -> {
+                        callBack.completeBlock(true, jsonString);
+                    });
+
                 } else {
-                    callBack.completeBlock(false, "请求失败");
+                    mainHandle.post(() -> {
+                        callBack.completeBlock(false, "数据解析失败");
+                    });
                 }
             }
         });
+    }
+
+    /**
+     * 发起激活账号请求
+     *
+     * @param username 用户名
+     * @param smsToken 备案验证码
+     * @param callBack 请求回调
+     */
+    public static void activations(String username, String smsToken, NetWorkCallBack callBack) {
+
+        // 获取激活接口
+        String url = MetaDataService.getInstance().getActivationsURL();
+
+        if (StringUtils.isEmpty(url)) {
+            MetaDataService.getInstance().initMetadata();
+            callBack.completeBlock(false, "正在获取元数据");
+            return;
+        }
+
+        // 封装参数
+        Map<String, Object> params = new HashMap<>();
+        params.put("industry_code", "MVMT");
+        params.put("login_name", username);
+        params.put("login_type", "1");
+        params.put("ownerType", "1");
+        params.put("sms_token", smsToken);
+
+        //网络请求激活账户
+        HttpRequestApi.postRequest(url,params,callBack);
+    }
+
+    /**
+     * 请求重发验证码 激活账户
+     *
+     * @param username 用户名
+     * @param callBack
+     */
+    public static void resendConfirmationCode(String username, NetWorkCallBack callBack) {
+
+        // 获取重发验证码接口
+        String url = MetaDataService.getInstance().getConfirmationCodeURL();
+
+        if (StringUtils.isEmpty(url)) {
+            MetaDataService.getInstance().initMetadata();
+            callBack.completeBlock(false, "正在获取元数据");
+            return;
+        }
+
+        // 封装参数
+        Map<String, Object> params = new HashMap<>();
+        params.put("industry_code", "MVMT");
+        params.put("login_name", username);
+        params.put("login_type", "1");
+        params.put("ownerType", "1");
+
+        //网络请求重发验证码
+        HttpRequestApi.postRequest(url,params,callBack);
+    }
+
+    /**
+     * 设置密码 适用于激活(忘记密码)界面 第一次设置（通过验证码设置）
+     *
+     * @param username 用户名
+     * @param smsToken 备案验证码
+     * @param password 用户密码
+     * @param callBack 请求回调
+     */
+    public static void createPassword(String username, String smsToken, String password, NetWorkCallBack callBack) {
+        // 获取设置密码的URL
+        String url = MetaDataService.getInstance().getCreatePwdURL();
+
+        if (StringUtils.isEmpty(url)) {
+            MetaDataService.getInstance().initMetadata();
+            callBack.completeBlock(false, "正在获取元数据");
+            return;
+        }
+
+        // 封装参数
+        Map<String, Object> params = new HashMap<>();
+        params.put("industry_code", "MVMT");
+        params.put("login_name", username);
+        params.put("login_type", "1");
+        params.put("ownerType", "1");
+        params.put("password", password);
+        params.put("sms_token", smsToken);
+
+        //网络请求设置密码
+        HttpRequestApi.postRequest(url,params,callBack);
+    }
+
+    /**
+     * 生成忘记密码的验证码(从业人员激活状态)/重新设置密码
+     *
+     * @param username 用户名
+     * @param callBack 请求回调
+     */
+    public static void sendForgetPwdReCode(String username, NetWorkCallBack callBack) {
+
+        // 获取发送证码接口
+        String url = MetaDataService.getInstance().getForgetPwdReCodeURL();
+
+        if (StringUtils.isEmpty(url)) {
+            MetaDataService.getInstance().initMetadata();
+            callBack.completeBlock(false, "正在获取元数据");
+            return;
+        }
+
+        // 封装参数
+        Map<String, Object> params = new HashMap<>();
+        params.put("industry_code", "MVMT");
+        params.put("login_name", username);
+        params.put("login_type", "1");
+        params.put("ownerType", "1");
+
+        //网络请求重发验证码
+        HttpRequestApi.postRequest(url,params,callBack);
+    }
+
+    /**
+     * 校验（重新设置密码的）验证码
+     *
+     * @param username 用户名
+     * @param smsToken 备案验证码
+     * @param callBack 请求回调
+     */
+    public static void checkResetPwdSmsToken(String username, String smsToken, NetWorkCallBack callBack) {
+
+        // 获取校验接口
+        String url = MetaDataService.getInstance().getLoadPwdReCodeURL();
+
+        if (StringUtils.isEmpty(url)) {
+            MetaDataService.getInstance().initMetadata();
+            callBack.completeBlock(false, "正在获取元数据");
+            return;
+        }
+
+        // 封装参数
+        Map<String, Object> params = new HashMap<>();
+        params.put("industry_code", "MVMT");
+        params.put("login_name", username);
+        params.put("login_type", "1");
+        params.put("ownerType", "1");
+        params.put("sms_token", smsToken);
+
+        // 校验验证码
+        HttpRequestApi.getRequest(url,params,callBack);
+    }
+
+    /**
+     * 重新设置密码 已激活状态
+     * @param username     用户名
+     * @param oldPassword  老密码
+     * @param password     新密码
+     * @param callBack     请求回调
+     */
+    public static void resetPasswordRequest(String username, String oldPassword, String password, NetWorkCallBack callBack){
+
+        // 获取重新设置密码的URL
+        String url = MetaDataService.getInstance().getPwdRecoveryURL();
+        // 封装参数
+        Map<String, Object> params = new HashMap<>();
+        params.put("industry_code", "MVMT");
+        params.put("login_name", username);
+        params.put("login_type", "1");
+        params.put("ownerType", "1");
+        params.put("old_password", oldPassword);
+        params.put("password", password);
+
     }
 
     /**
@@ -188,12 +355,12 @@ public class MetaDataApiRequest {
 
     }
 
-    /**
-     * 自定义请求回调接口
-     */
-    @FunctionalInterface
-    public interface NetWorkCallBack {
-        void completeBlock(boolean isSuccess, Object object);
-    }
-
 }
+
+
+
+
+
+
+
+

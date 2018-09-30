@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -42,12 +43,22 @@
     </LinearLayout>
 
     <!-- 下拉刷新和列表视图-->
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/history_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:background="@color/clearcolor"
+        app:srlAccentColor="@color/clearcolor"
+        app:srlEnableLoadMore="true"
+        app:srlEnableRefresh="true"
+        app:srlPrimaryColor="@color/clearcolor">
 
+        <!-- header-->
+        <com.scwang.smartrefresh.layout.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- 列表视图-->
         <ListView
             android:id="@+id/history_list_view"
             android:layout_width="match_parent"
@@ -56,11 +67,14 @@
             android:divider="@null"
             android:listSelector="@color/clearcolor"
             android:paddingBottom="15dp"
-            android:scrollbars="none">
+            android:scrollbars="none" />
 
-        </ListView>
+        <!-- footer-->
+        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     <!-- 空数据背景视图-->
     <LinearLayout
@@ -68,7 +82,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/history_null_img"

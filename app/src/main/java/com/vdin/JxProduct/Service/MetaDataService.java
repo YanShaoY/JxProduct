@@ -47,12 +47,9 @@ public class MetaDataService {
 
     //初始化元数据
     public void initMetadata() {
-        MetaDataApiRequest.requestMetaDataSource(new MetaDataApiRequest.NetWorkCallBack() {
-            @Override
-            public void completeBlock(boolean isSuccess, Object object) {
-                if (isSuccess) {
-                    saveMetaDataFile((String) object);
-                }
+        MetaDataApiRequest.requestMetaDataSource((isSuccess, object) -> {
+            if (isSuccess) {
+                saveMetaDataFile((String) object);
             }
         });
     }
@@ -144,6 +141,68 @@ public class MetaDataService {
         return getMetaDataURLForRel("dosser/create/session");
     }
 
+    /**
+     * 获取激活的URL
+     *
+     * @return 返回激活的URL
+     */
+    public String getActivationsURL(){
+        return getMetaDataURLForRel("dosser/create/confirmation");
+    }
+
+    /**
+     * 获取生成备案验证码的URL
+     *
+     * @return 返回生成备案验证码的URL
+     */
+    public String getConfirmationCodeURL() {
+        return getMetaDataURLForRel("dosser/create/confirmation_code");
+    }
+
+    /**
+     * 获取重置密码的URL
+     *
+     * @return 返回重置密码URL
+     */
+    public String getPwdRecoveryURL() {
+        return getMetaDataURLForRel("dosser/create/password_recovery");
+    }
+
+    /**
+     * 获取设置密码的URL
+     *
+     * @return 返回设置密码URL
+     */
+    public String getCreatePwdURL() {
+        return getMetaDataURLForRel("dosser/create/password");
+    }
+
+    /**
+     * 移动端-生成忘记密码验证码
+     *
+     * @return 返回生成忘记密码验证码的URL
+     */
+    public String getForgetPwdReCodeURL() {
+        return getMetaDataURLForRel("dosser/create/password_recovery_code");
+    }
+
+    /**
+     * 移动端-校验验证码
+     *
+     * @return 返回校验验证码的URL
+     */
+    public String getLoadPwdReCodeURL() {
+        return getMetaDataURLForRel("dosser/load/password_recovery_code");
+    }
+
+    /**
+     * 移动端-获取时间
+     *
+     * @return 返回获取时间的URL
+     */
+    public String getTimeURL() {
+        return getMetaDataURLForRel("dosser/get/time");
+    }
 
     /**
      * 获取元数据的links
@@ -154,7 +213,9 @@ public class MetaDataService {
 
         if (metaDataLinks == null || metaDataLinks.size() == 0) {
             MetaDataResponse metaDataFile = getMetaDataFile();
-            metaDataLinks = metaDataFile.getCollection().get(0).getLinks();
+            if (metaDataFile != null){
+                metaDataLinks = metaDataFile.getCollection().get(0).getLinks();
+            }
         }
 
         if (metaDataLinks == null || metaDataLinks.size() == 0) {
@@ -173,13 +234,8 @@ public class MetaDataService {
      */
     public String getMetaDataURLForRel(String rel) {
 
-        if (metaDataLinks == null || metaDataLinks.size() == 0) {
-            MetaDataResponse metaDataFile = getMetaDataFile();
-            metaDataLinks = metaDataFile.getCollection().get(0).getLinks();
-        }
-
-        if (metaDataLinks == null || metaDataLinks.size() == 0) {
-            initMetadata();
+        List<MetaDataResponse.CollectionBean.LinksBean> linksBeanList = getMetaDataLinks();
+        if (linksBeanList == null || linksBeanList.size() == 0) {
             return null;
         }
 

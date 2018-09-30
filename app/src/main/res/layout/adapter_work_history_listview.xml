@@ -11,16 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/mps_message_bg"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/ljls_pic"
+            android:id="@+id/history_list_img"
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:src="@mipmap/default_photo" />
@@ -39,7 +39,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/ljls_chepai"
+                    android:id="@+id/history_list_chepai"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="川A 00790"
@@ -47,7 +47,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/ljls_color"
+                    android:id="@+id/history_list_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -65,7 +65,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/ljls_name"
+                    android:id="@+id/history_list_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="张**"
@@ -73,7 +73,7 @@
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/ljls_type"
+                    android:id="@+id/history_list_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -92,7 +92,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/ljls_time"
+                    android:id="@+id/history_list_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2016.11.21   14:00:12"

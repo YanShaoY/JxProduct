@@ -23,7 +23,7 @@ public class GAConfirmDialog extends Dialog {
         DEFAULT, SINGLE, MULTI, INPUT; //缺省、单选、多选、输入
     }
 
-    // 弹出上下文
+    // 弹上下文
     public Context myContext;
     private View contentView;
     DialogStyle style;

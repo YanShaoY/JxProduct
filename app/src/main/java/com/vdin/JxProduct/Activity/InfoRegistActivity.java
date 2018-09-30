@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.vdin.JxProduct.API.MetaDataApiRequest;
+import com.vdin.JxProduct.API.NetWorkCallBack;
 import com.vdin.JxProduct.API.WorkApiRequest;
 import com.vdin.JxProduct.Adapter.WorkRegistAddPicAdapter;
 import com.vdin.JxProduct.Gson.WorkAddRegistGson;
@@ -32,6 +33,7 @@ import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Service.OssPhotoUpLoadService;
 import com.vdin.JxProduct.Util.ActivityConllector;
 import com.vdin.JxProduct.Util.AllCapTransformationMethod;
+import com.vdin.JxProduct.Util.HttpUtil;
 import com.vdin.JxProduct.Util.StringUtils;
 import com.vdin.JxProduct.Util.ToolUtil;
 import com.vdin.JxProduct.View.ConfirmDialog;
@@ -146,7 +148,7 @@ public class InfoRegistActivity extends BaseActivity {
     /**
      * 初始化默认数据 测试用
      */
-    private void initTestData(){
+    private void initTestData() {
 
         licensePlateNumberEdit.setText("川A-88888");
         cheJiaNumberEdit.setText("WDDHF5EB0AA071919");
@@ -234,32 +236,28 @@ public class InfoRegistActivity extends BaseActivity {
      */
     private void initColorsList() {
 
-        WorkApiRequest.queryDicColor(new MetaDataApiRequest.NetWorkCallBack() {
-            @Override
-            public void completeBlock(boolean isSuccess, Object object) {
+        WorkApiRequest.queryDicColor((isSuccess, object) -> {
 
-                if (isSuccess) {
+            if (isSuccess) {
 
-                    // json字符串
-                    String responseStr = (String) object;
+                // json字符串
+                String responseStr = (String) object;
 
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseStr);
-                        WorkColorListGson colorListGson = new Gson().fromJson(jsonObject.toString(), WorkColorListGson.class);
-                        // 保存颜色的name数组，和code数组
-                        saveColorListArrWith(colorListGson);
+                try {
+                    JSONObject jsonObject = new JSONObject(responseStr);
+                    WorkColorListGson colorListGson = new Gson().fromJson(jsonObject.toString(), WorkColorListGson.class);
+                    // 保存颜色的name数组，和code数组
+                    saveColorListArrWith(colorListGson);
 
-                    } catch (JSONException e) {
+                } catch (JSONException e) {
 
-                        e.printStackTrace();
-                    }
-
-                } else {
-                    Log.d(this.toString(), "completeBlock: " + object);
+                    e.printStackTrace();
                 }
 
-
+            } else {
+                Log.d(this.toString(), "completeBlock: " + object);
             }
+
         });
 
     }
@@ -344,12 +342,12 @@ public class InfoRegistActivity extends BaseActivity {
                         // 删除本地路径的原图
                         FileUtils.delFileByLocalPath(countPath);
                         // 并将压缩后的图片存储到本地
-                        boolean result = BitmapUtil.saveBitmap(bitmap,countPath);
-                        if (!result){
+                        boolean result = BitmapUtil.saveBitmap(bitmap, countPath);
+                        if (!result) {
                             countPath = null;
                             showToastWithMessage("图片存储本地失败，请重新拍照");
 
-                        }else {
+                        } else {
                             // 删除默认拍照视图
                             picInfoArrayList.remove(defaultAddPic);
                             // 创建图片信息
@@ -440,6 +438,12 @@ public class InfoRegistActivity extends BaseActivity {
     @OnClick(R.id.complete_button_id)
     public void onCompleteButtonIdClicked() {
 
+        // 判断网络状态
+        if (!HttpUtil.isNetworkConnected(this)) {
+            showToastWithMessage("无可用网络，请检查网路设置");
+            return;
+        }
+
         // 判断是否是加急业务
         if (!urgent_business_button_type) {
 
@@ -493,7 +497,7 @@ public class InfoRegistActivity extends BaseActivity {
     public void upLoadIdCardPhoto(String photoPath) {
 
         // 上传身份证照片
-        WorkApiRequest.upLoadPhoto(photoPath, -1, new MetaDataApiRequest.NetWorkCallBack() {
+        WorkApiRequest.upLoadPhoto(photoPath, -1, new NetWorkCallBack() {
             @Override
             public void completeBlock(boolean isSuccess, Object object) {
                 // 获取返回信息
@@ -529,15 +533,15 @@ public class InfoRegistActivity extends BaseActivity {
 
         } else {
 
-            OssPhotoUpLoadService.upLoadPhoto(picInfoArrayList,(isSuccess,object)->{
-                ArrayList<WorkRegistAddPicInfo> arrayList =(ArrayList<WorkRegistAddPicInfo>)object;
+            OssPhotoUpLoadService.upLoadPhoto(picInfoArrayList, (isSuccess, object) -> {
+                ArrayList<WorkRegistAddPicInfo> arrayList = (ArrayList<WorkRegistAddPicInfo>) object;
                 picInfoArrayList = arrayList == null ? arrayList : picInfoArrayList;
-                if (!isSuccess){
+                if (!isSuccess) {
                     closeProgressDialog();
                     showToastWithMessage("信息提交失败");
                     // 开启提交按钮响应
                     completeButtonId.setClickable(true);
-                }else {
+                } else {
                     dataSubmitted();
                 }
 
@@ -610,7 +614,7 @@ public class InfoRegistActivity extends BaseActivity {
         gson.setVehicleModel(carTypeEdit.getText().toString());
         // 业务照片
         List<WorkAddRegistGson.BizPhotoDTOListBean> beans = new ArrayList<>();
-        for (int i =0; i < picInfoArrayList.size(); i++) {
+        for (int i = 0; i < picInfoArrayList.size(); i++) {
             WorkAddRegistGson.BizPhotoDTOListBean bean = new WorkAddRegistGson.BizPhotoDTOListBean();
             bean.setOrder_number(i);
             bean.setPhoto_name("业务照片");
@@ -632,7 +636,8 @@ public class InfoRegistActivity extends BaseActivity {
                     if (picInfoArrayList.size() < MaxPicSize) {
                         if (!picInfoArrayList.contains(defaultAddPic)) {
                             picInfoArrayList.add(defaultAddPic);
-                        };
+                        }
+                        ;
                     }
                 }
             });
@@ -677,7 +682,7 @@ public class InfoRegistActivity extends BaseActivity {
     /**
      * 初始化数据显示 在提交成功或失败以后
      */
-    public void reloadDefaultData(){
+    public void reloadDefaultData() {
 
 
         selectcolor = 0;

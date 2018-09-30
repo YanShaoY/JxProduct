@@ -15,16 +15,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.vdin.JxProduct.API.MetaDataApiRequest;
+import com.vdin.JxProduct.API.NetWorkCallBack;
 import com.vdin.JxProduct.Gson.LoginDataResponse;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Service.UserInfoService;
 import com.vdin.JxProduct.Util.ActivityConllector;
 import com.vdin.JxProduct.Util.HttpUtil;
 import com.vdin.JxProduct.Util.LaunchUtil;
-import com.vdin.JxProduct.db.loginDataLinks;
-import com.vdin.JxProduct.db.loginDataUserInfo;
-
-import org.litepal.LitePal;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,7 +82,7 @@ public class LoginActivity extends BaseActivity {
     /**
      * 测试数据
      */
-    private void testData(){
+    private void testData() {
         etPhone.setText("14258585201");
         etPassword.setText("Az123456");
     }
@@ -96,23 +93,6 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.rv_Back)
     public void onRvBackClicked() {
         finish();
-    }
-
-
-    @OnClick(R.id.et_phone)
-    public void onEtPhoneClicked() {
-    }
-
-    @OnClick(R.id.rv_phone)
-    public void onRvPhoneClicked() {
-    }
-
-    @OnClick(R.id.et_password)
-    public void onEtPasswordClicked() {
-    }
-
-    @OnClick(R.id.rv_password)
-    public void onRvPasswordClicked() {
     }
 
     /**
@@ -143,22 +123,23 @@ public class LoginActivity extends BaseActivity {
         // 判断网络状态
         if (!HttpUtil.isNetworkConnected(this)) {
             showToastWithMessage("无可用网络，请检查网路设置");
+            return;
         }
 
-        // 02 用户登录 TODO
+        // 02 用户登录
         login();
 //        JumpToMainActivity();
 
     }
 
     /**
-     * 注册按钮点击响应事件
+     * 密码重置按钮点击响应事件
      */
     @OnClick(R.id.txt_mmcz)
     public void onTxtMmczClicked() {
-
+        Intent resetPwdItent = new Intent(myActivity,ResetPwdActivity.class);
+        startActivity(resetPwdItent);
     }
-
 
     /**
      * 登录
@@ -170,7 +151,7 @@ public class LoginActivity extends BaseActivity {
         String username = etPhone.getText().toString();
         String password = etPassword.getText().toString();
 
-        MetaDataApiRequest.login(username, password, new MetaDataApiRequest.NetWorkCallBack() {
+        MetaDataApiRequest.login(username, password, new NetWorkCallBack() {
             @Override
             public void completeBlock(boolean isSuccess, Object object) {
                 closeProgressDialog();
@@ -197,9 +178,6 @@ public class LoginActivity extends BaseActivity {
         });
 
     }
-
-
-
 
     /**
      * 跳转至主界面
@@ -264,27 +242,6 @@ public class LoginActivity extends BaseActivity {
         imms.hideSoftInputFromWindow(etPhone.getWindowToken(), 0);
         return super.onTouchEvent(event);
     }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    /**
-     * 界面注销方法
-     */
-    @Override
-    protected void onDestroy() {
-        Log.d(this.toString(), "onDestroy");
-        super.onDestroy();
-    }
-
 
 }
 

@@ -33,15 +33,24 @@ public class HomeActivity extends BaseActivity {
      */
     @OnClick({R.id.btn_register, R.id.btn_login})
     public void onViewClicked(View view) {
+
         switch (view.getId()) {
             case R.id.btn_register:
 
-                break;
-            case R.id.btn_login:
                 MetaDataService.getInstance().initMetadata();
-                Intent mIntent = new Intent(HomeActivity.this,
+                Intent activationActivity = new Intent(HomeActivity.this,
+                        ActivationActivity.class);
+                startActivity(activationActivity);
+
+                break;
+
+            case R.id.btn_login:
+
+                MetaDataService.getInstance().initMetadata();
+                Intent loginActivity = new Intent(HomeActivity.this,
                         LoginActivity.class);
-                startActivity(mIntent);
+                startActivity(loginActivity);
+
                 break;
         }
     }

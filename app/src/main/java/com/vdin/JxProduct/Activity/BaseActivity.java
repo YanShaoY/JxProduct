@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
@@ -25,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vdin.JxProduct.OSSService.PermissionUtil;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Util.ActivityConllector;
 import com.vdin.JxProduct.Util.ToolUtil;
@@ -170,29 +174,29 @@ public class BaseActivity extends AppCompatActivity {
      * @param activity
      */
     public void fullScreen(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                //5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色
-                Window window = activity.getWindow();
-                View decorView = window.getDecorView();
-                //两个 flag 要结合使用，表示让应用的主体内容占用系统状态栏的空间
-                int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-                decorView.setSystemUiVisibility(option);
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(Color.TRANSPARENT);
-                //导航栏颜色也可以正常设置
-//                window.setNavigationBarColor(Color.TRANSPARENT);
-            } else {
-                Window window = activity.getWindow();
-                WindowManager.LayoutParams attributes = window.getAttributes();
-                int flagTranslucentStatus = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-                int flagTranslucentNavigation = WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
-                attributes.flags |= flagTranslucentStatus;
-//                attributes.flags |= flagTranslucentNavigation;
-                window.setAttributes(attributes);
-            }
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                //5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色
+//                Window window = activity.getWindow();
+//                View decorView = window.getDecorView();
+//                //两个 flag 要结合使用，表示让应用的主体内容占用系统状态栏的空间
+//                int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+//                decorView.setSystemUiVisibility(option);
+//                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//                window.setStatusBarColor(Color.TRANSPARENT);
+//                //导航栏颜色也可以正常设置
+////                window.setNavigationBarColor(Color.TRANSPARENT);
+//            } else {
+//                Window window = activity.getWindow();
+//                WindowManager.LayoutParams attributes = window.getAttributes();
+//                int flagTranslucentStatus = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+//                int flagTranslucentNavigation = WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
+//                attributes.flags |= flagTranslucentStatus;
+////                attributes.flags |= flagTranslucentNavigation;
+//                window.setAttributes(attributes);
+//            }
+//        }
     }
 
     /**
@@ -202,11 +206,11 @@ public class BaseActivity extends AppCompatActivity {
      * @param value
      */
     public void setFitsSystemWindows(Activity activity, boolean value) {
-        ViewGroup contentFrameLayout = (ViewGroup) activity.findViewById(android.R.id.content);
-        View parentView = contentFrameLayout.getChildAt(0);
-        if (parentView != null && Build.VERSION.SDK_INT >= 14) {
-            parentView.setFitsSystemWindows(value);
-        }
+//        ViewGroup contentFrameLayout = (ViewGroup) activity.findViewById(android.R.id.content);
+//        View parentView = contentFrameLayout.getChildAt(0);
+//        if (parentView != null && Build.VERSION.SDK_INT >= 14) {
+//            parentView.setFitsSystemWindows(value);
+//        }
     }
 
     /**
@@ -275,6 +279,14 @@ public class BaseActivity extends AppCompatActivity {
         backButtonAction();
     }
 
+    // 跳转到当前应用的设置界面
+    public void goToAppSetting() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivityForResult(intent, PermissionUtil.REQUEST_CODE_STORAGE);
+    }
 }
 
 

@@ -127,8 +127,8 @@ public class LoginActivity extends BaseActivity {
         }
 
         // 02 用户登录
-        login();
-//        JumpToMainActivity();
+//        login();
+        JumpToMainActivity();
 
     }
 

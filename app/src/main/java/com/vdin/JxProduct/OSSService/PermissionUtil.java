@@ -2,8 +2,11 @@ package com.vdin.JxProduct.OSSService;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -31,6 +34,13 @@ public class PermissionUtil {
     public static final int REQUEST_CODE_LOCATION_NEED = 0x011;  //定位权限
     public static final int REQUEST_CALL_PHONE = 0x012;  //打电话
 
+    /**
+     * 权限判断
+     * @param activity
+     * @param permission
+     * @param requestCode
+     * @return
+     */
     private static boolean checkPermissions(Activity activity, String permission, int requestCode) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -244,7 +254,7 @@ public class PermissionUtil {
     }
 
     /**
-     * 外部存储权限
+     * activity外部存储权限
      */
     public static boolean checkExternalStorage(Activity activity) {
         return checkPermissions(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_CODE_STORAGE);

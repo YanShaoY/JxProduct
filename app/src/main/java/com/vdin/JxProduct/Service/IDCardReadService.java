@@ -24,6 +24,7 @@ import com.readTwoGeneralCard.EidUserInfo;
 import com.readTwoGeneralCard.OTGReadCardAPI;
 import com.readTwoGeneralCard.PassportInfo;
 import com.readTwoGeneralCard.Serverinfo;
+import com.vdin.JxProduct.Activity.BaseActivity;
 import com.vdin.JxProduct.OSSService.BitmapUtil;
 import com.vdin.JxProduct.OSSService.DateUtils;
 import com.vdin.JxProduct.OSSService.PermissionUtil;
@@ -181,7 +182,6 @@ public class IDCardReadService implements ActiveCallBack {
      */
     public void onActivityDestroyed(Activity activity) {
         if (activity.equals(myActivity)) {
-            stopToReadIdCard();
             this.myActivity = null;
             myHandler.removeCallbacksAndMessages(null);
 

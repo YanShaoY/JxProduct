@@ -8,12 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="TranslucentTheme" parent="AppTheme" />
-
-    <style name="TranslucentTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="TranslucentTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
     <style name="dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>

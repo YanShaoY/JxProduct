@@ -140,7 +140,7 @@ public class InfoRegistActivity extends BaseActivity {
         // 本类实例
         myActivity = this;
         // 上个界面传入的intent
-        myIntent = getIntent();
+//        myIntent = getIntent();
         // 加急按钮选中状态
         urgent_business_button_type = false;
     }

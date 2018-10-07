@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -30,10 +31,12 @@ import com.vdin.JxProduct.OSSService.BitmapUtil;
 import com.vdin.JxProduct.OSSService.FileUtils;
 import com.vdin.JxProduct.OSSService.PhotoUtils;
 import com.vdin.JxProduct.R;
+import com.vdin.JxProduct.Service.IDCardReadService;
 import com.vdin.JxProduct.Service.OssPhotoUpLoadService;
 import com.vdin.JxProduct.Util.ActivityConllector;
 import com.vdin.JxProduct.Util.AllCapTransformationMethod;
 import com.vdin.JxProduct.Util.HttpUtil;
+import com.vdin.JxProduct.Util.LocationUtil;
 import com.vdin.JxProduct.Util.StringUtils;
 import com.vdin.JxProduct.Util.ToolUtil;
 import com.vdin.JxProduct.View.ConfirmDialog;
@@ -57,6 +60,10 @@ public class InfoRegistActivity extends BaseActivity {
     public static InfoRegistActivity myActivity;
     // 上个界面传入的Intent
     Intent myIntent;
+    // 身份证信息模型
+    private IDCardReadService.Identityinfo myIdentityinfo;
+    // 定位信息
+    private Location currentLocation = null;
 
     // 选择颜色name列表
     ArrayList<String> colorNameArr;
@@ -114,7 +121,7 @@ public class InfoRegistActivity extends BaseActivity {
         // 初始化视图监听
         initViewLisener();
         // 初始化请求颜色列表
-        initColorsList();
+//        initColorsList();
         // 初始化拍照列表视图
         initWorkPicGridView();
 
@@ -140,7 +147,7 @@ public class InfoRegistActivity extends BaseActivity {
         // 本类实例
         myActivity = this;
         // 上个界面传入的intent
-//        myIntent = getIntent();
+        myIntent = getIntent();
         // 加急按钮选中状态
         urgent_business_button_type = false;
     }
@@ -315,6 +322,29 @@ public class InfoRegistActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (LocationUtil.isGpsEnabled() && LocationUtil.isLocationEnabled()) {
+            LocationUtil.register(1000, 200, new LocationUtil.OnLocationChangeListener() {
+                @Override
+                public void getLastKnownLocation(Location location) { currentLocation = location; }
+                @Override
+                public void onLocationChanged(Location location) { currentLocation = location; }
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {}
+            });
+
+        } else {
+            LocationUtil.openGpsSettings();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocationUtil.unregister();
+    }
 
     /**
      * 拍摄照片以后的回传接口
@@ -479,9 +509,10 @@ public class InfoRegistActivity extends BaseActivity {
 
         String scenePhotoPath = myIntent.getStringExtra("scenePhotoPath");
         String scenePhotoUrl = myIntent.getStringExtra("scenePhotoUrl");
+        myIdentityinfo = (IDCardReadService.Identityinfo) myIntent.getParcelableExtra("identityinfo");
 
         // 若未上传身份证照片 则上传身份证照片
-        if (StringUtils.isEmpty(scenePhotoUrl)) {
+        if (!StringUtils.isEmpty(scenePhotoPath) && StringUtils.isEmpty(scenePhotoUrl) ) {
             upLoadIdCardPhoto(scenePhotoPath);
         } else { // 若已上传 则开始上传业务图片
             upLoadPicInfoArrPhoto();

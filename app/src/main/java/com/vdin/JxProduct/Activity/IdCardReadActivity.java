@@ -71,7 +71,7 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
         initNavBar();
         // 参数初始化
         initParameter();
-        testData();
+//        testData();
 
     }
 
@@ -190,19 +190,19 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
 
         // 判断无误，跳转下一个界面
         Intent intent = new Intent(this, InfoRegistActivity.class);
-//        if (myIdentityinfo == null || StringUtils.isEmpty(myIdentityinfo.customer_identification_number)) {
-//            myIdentityinfo = new IDCardReadService.Identityinfo();
-//            myIdentityinfo.reuse = "false";
-//            myIdentityinfo.idtype = "2";
-//            myIdentityinfo.customer_identification_number = cardNumberEdit.getText().toString().trim();
-//            myIdentityinfo.customer_name = cardNameEdit.getText().toString().trim();
-//        }
-//        myIdentityinfo.customer_mobile_phone_number = cardPhoneEdit.getText().toString().trim();
-//
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable("identityinfo", myIdentityinfo);
-//        intent.putExtras(bundle);
-//        intent.putExtra("scenePhotoPath", scenePhotoUrl.toString());
+        if (myIdentityinfo == null || StringUtils.isEmpty(myIdentityinfo.customer_identification_number)) {
+            myIdentityinfo = new IDCardReadService.Identityinfo();
+            myIdentityinfo.reuse = "false";
+            myIdentityinfo.idtype = "2";
+            myIdentityinfo.customer_identification_number = cardNumberEdit.getText().toString().trim();
+            myIdentityinfo.customer_name = cardNameEdit.getText().toString().trim();
+        }
+        myIdentityinfo.customer_mobile_phone_number = cardPhoneEdit.getText().toString().trim();
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("identityinfo", myIdentityinfo);
+        intent.putExtras(bundle);
+        intent.putExtra("scenePhotoPath", scenePhotoUrl.toString());
         startActivity(intent);
     }
 

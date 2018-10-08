@@ -58,22 +58,40 @@ public class HistoryDetailActivity extends BaseActivity {
 
         Intent intent = getIntent();
 
-        if (intent.getStringExtra("id") == null) return;
-        String orderId = intent.getStringExtra("id");
+//        if (intent.getStringExtra("id") == null) return;
+//
+//        String orderId = intent.getStringExtra("id");
+//
+//        HistoryListDB listDB = HistoryListDB.selectItem(orderId);
+//
+//        if (listDB != null){
+//            String name = StringUtils.cutStrToName(listDB.getName());
+//            historyDetailName.setText(name);
+//            historyDetailSex.setText(listDB.getSex());
+//            historyDetailChepai.setText(listDB.getChepai());
+//            historyDetailCarType.setText(listDB.getType());
+//            historyDetailCarColor.setText(listDB.getColor());
+//            historyDetailInfoDesc.setText(listDB.getDescription());
+//            historyDetailTime.setText(listDB.getTime());
+//        }
 
-        HistoryListDB listDB = HistoryListDB.selectItem(orderId);
 
-        if (listDB != null){
-            String name = StringUtils.cutStrToName(listDB.getName());
-            historyDetailName.setText(name);
-            historyDetailSex.setText(listDB.getSex());
-            historyDetailChepai.setText(listDB.getChepai());
-            historyDetailCarType.setText(listDB.getType());
-            historyDetailCarColor.setText(listDB.getColor());
-            historyDetailInfoDesc.setText(listDB.getDescription());
-            historyDetailTime.setText(listDB.getTime());
-        }
+        String name = intent.getStringExtra("name");
+        String sex = intent.getStringExtra("sex");
+        String chepai = intent.getStringExtra("chepai");
+        String type = intent.getStringExtra("type");
+        String color = intent.getStringExtra("color");
+        String description = intent.getStringExtra("description");
+        String time = intent.getStringExtra("time");
 
+        name = StringUtils.cutStrToName(name);
+        historyDetailName.setText(name);
+        historyDetailSex.setText(sex);
+        historyDetailChepai.setText(chepai);
+        historyDetailCarType.setText(type);
+        historyDetailCarColor.setText(color);
+        historyDetailInfoDesc.setText(description);
+        historyDetailTime.setText(time);
 
     }
 

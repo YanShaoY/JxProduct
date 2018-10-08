@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -21,10 +20,8 @@ import com.vdin.JxProduct.OSSService.FileUtils;
 import com.vdin.JxProduct.OSSService.PhotoUtils;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Service.IDCardReadService;
-import com.vdin.JxProduct.Util.ActivityConllector;
 import com.vdin.JxProduct.Util.StringUtils;
 import com.vdin.JxProduct.Util.ToolUtil;
-import com.vdin.JxProduct.View.ConfirmDialog;
 import com.vdin.JxProduct.View.GAConfirmDialog;
 
 import butterknife.BindView;
@@ -71,6 +68,7 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
         initNavBar();
         // 参数初始化
         initParameter();
+        // 测试数据
 //        testData();
 
     }
@@ -79,8 +77,8 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
      * 导航栏初始化
      */
     private void initNavBar() {
-        fullScreen(this);
-        setFitsSystemWindows(this, true);
+//        fullScreen(this);
+//        setFitsSystemWindows(this, true);
         setHeaderleftTurnBack("");
         setHeaderTitle("身份验证");
     }
@@ -93,6 +91,9 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
         myService = new IDCardReadService(this, this);
     }
 
+    /**
+     * 测试数据
+     */
     public void testData() {
 
         cardNumberEdit.setText("511528199501151612");
@@ -108,9 +109,91 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
      */
     @OnClick(R.id.card_scene_button)
     public void onCardSceneButtonClicked() {
-        // 拍摄照片
-        PhotoUtils.takePicture(this);
+
+        // 判断是否身份证读取
+        Drawable drawable = cardImageButton.getBackground();
+        if ((drawable instanceof BitmapDrawable)) {
+            showToastWithMessage("NFC读取无需拍摄现场照片~");
+        }else {
+            // 拍摄照片
+            PhotoUtils.takePicture(this);
+        }
     }
+
+    /**
+     * 下一步按钮点击响应事件
+     */
+    @OnClick(R.id.next_button_id)
+    public void onNextButtonIdClicked() {
+        // 身份证号码判断
+        if (!ToolUtil.personIdValidation(cardNumberEdit.getText().toString().trim())) {
+            showToastWithMessage("身份证号码输入不正确");
+            return;
+        }
+
+        // 姓名判断
+        if (StringUtils.isEmpty(cardNameEdit.getText().toString().trim())) {
+            showToastWithMessage("请填写正确的姓名");
+            return;
+        }
+
+        // 电话号码判断
+        if (!ToolUtil.isMobileNO(cardPhoneEdit.getText().toString().trim())) {
+            showToastWithMessage("请输入正确的手机号码");
+            return;
+        }
+
+        // 现场照片拍照判断
+        if (StringUtils.isEmpty(scenePhotoUrl)) {
+            Drawable drawable = cardImageButton.getBackground();
+            if (!(drawable instanceof BitmapDrawable)) {
+                showToastWithMessage("请拍摄现场照片");
+                return;
+            }
+        }
+
+        // 判断无误，跳转下一个界面
+        Intent intent = new Intent(this, InfoRegistActivity.class);
+        if (myIdentityinfo == null || StringUtils.isEmpty(myIdentityinfo.customer_identification_number)) {
+            myIdentityinfo = new IDCardReadService.Identityinfo();
+            myIdentityinfo.reuse = "false";
+            myIdentityinfo.idtype = "2";
+            myIdentityinfo.customer_identification_number = cardNumberEdit.getText().toString().trim();
+            myIdentityinfo.customer_name = cardNameEdit.getText().toString().trim();
+            myIdentityinfo.customer_identity_card_photos = scenePhotoUrl;
+        }
+
+        // 存储电话号码
+        myIdentityinfo.customer_mobile_phone_number = cardPhoneEdit.getText().toString().trim();
+        // 若为NFC读取 切已经拍照
+        if (myIdentityinfo.idtype.equals("1") && !StringUtils.isEmpty(scenePhotoUrl)){
+            // 删除本地路径的原图
+            FileUtils.delFileByLocalPath(scenePhotoUrl);
+        }
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("identityinfo", myIdentityinfo);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    /**
+     * 重写父类返回按钮方法
+     */
+    @Override
+    protected void backButtonAction() {
+        GAConfirmDialog dialog = new GAConfirmDialog(this, GAConfirmDialog.DialogStyle.DEFAULT);
+        dialog.setupTitle("确定退出?", "#ff6464")
+                .tip("退出后将丢失已录入信息")
+                .isShowSingleButton(false)
+                .bgIcon(R.mipmap.ask)
+                .sure(v -> {
+                    finish();
+                })
+                .show();
+
+    }
+
+    /******************************************************** Activity 生命周期 ***********************************************************/
 
     /**
      * 拍摄照片以后的回传接口
@@ -155,75 +238,6 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
 //            cardSceneButton.setCompoundDrawables(null, top, null, null);
         }
     }
-
-    /**
-     * 下一步按钮点击响应事件
-     */
-    @OnClick(R.id.next_button_id)
-    public void onNextButtonIdClicked() {
-        // 身份证号码判断
-        if (!ToolUtil.personIdValidation(cardNumberEdit.getText().toString().trim())) {
-            showToastWithMessage("身份证号码输入不正确");
-            return;
-        }
-
-        // 姓名判断
-        if (StringUtils.isEmpty(cardNameEdit.getText().toString().trim())) {
-            showToastWithMessage("请填写正确的姓名");
-            return;
-        }
-
-        // 电话号码判断
-        if (!ToolUtil.isMobileNO(cardPhoneEdit.getText().toString().trim())) {
-            showToastWithMessage("请输入正确的手机号码");
-            return;
-        }
-
-        // 现场照片拍照判断
-        if (StringUtils.isEmpty(scenePhotoUrl)) {
-            Drawable drawable = cardImageButton.getBackground();
-            if (!(drawable instanceof BitmapDrawable)) {
-                showToastWithMessage("请拍摄现场照片");
-                return;
-            }
-        }
-
-        // 判断无误，跳转下一个界面
-        Intent intent = new Intent(this, InfoRegistActivity.class);
-        if (myIdentityinfo == null || StringUtils.isEmpty(myIdentityinfo.customer_identification_number)) {
-            myIdentityinfo = new IDCardReadService.Identityinfo();
-            myIdentityinfo.reuse = "false";
-            myIdentityinfo.idtype = "2";
-            myIdentityinfo.customer_identification_number = cardNumberEdit.getText().toString().trim();
-            myIdentityinfo.customer_name = cardNameEdit.getText().toString().trim();
-        }
-        myIdentityinfo.customer_mobile_phone_number = cardPhoneEdit.getText().toString().trim();
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("identityinfo", myIdentityinfo);
-        intent.putExtras(bundle);
-        intent.putExtra("scenePhotoPath", scenePhotoUrl.toString());
-        startActivity(intent);
-    }
-
-    /**
-     * 重写父类返回按钮方法
-     */
-    @Override
-    protected void backButtonAction() {
-        GAConfirmDialog dialog = new GAConfirmDialog(this, GAConfirmDialog.DialogStyle.DEFAULT);
-        dialog.setupTitle("确定退出?", "#ff6464")
-                .tip("退出后将丢失已录入信息")
-                .isShowSingleButton(false)
-                .bgIcon(R.mipmap.ask)
-                .sure(v -> {
-                    finish();
-                })
-                .show();
-
-    }
-
-    /******************************************************** Activity 生命周期 ***********************************************************/
 
     @Override
     protected void onResume() {
@@ -333,8 +347,6 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
                 .tip(tipStr)
                 .isShowSingleButton(true)
                 .bgIcon(R.mipmap.ask)
-                .sure(v -> {
-                })
                 .show();
 
     }
@@ -373,6 +385,9 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
 
         } else {
             // TODO 如果失败 恢复默认图片
+            //            Drawable top = getResources().getDrawable(R.mipmap.ksdj_btn_camera_big);
+//            top.setBounds(0, 0, top.getMinimumWidth(), top.getMinimumHeight());
+//            cardSceneButton.setCompoundDrawables(null, top, null, null);
 //            bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.card_border);
 //            // 版本适配 设置按钮 将图片传入作为背景
 //            if (Build.VERSION.SDK_INT >= 16)
@@ -386,34 +401,6 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

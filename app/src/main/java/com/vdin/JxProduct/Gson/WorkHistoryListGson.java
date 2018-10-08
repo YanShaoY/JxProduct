@@ -38,7 +38,6 @@ public class WorkHistoryListGson {
     }
 
     public static class CollectionBean {
-
         private MotorVehicleMaintenanceBean motorVehicleMaintenance;
         private List<MaintenancePhotosBean> maintenancePhotos;
 
@@ -59,14 +58,13 @@ public class WorkHistoryListGson {
         }
 
         public static class MotorVehicleMaintenanceBean {
-
             private String createdAt;
             private String id;
             private String name;
             private String plateNumber;
             private PractitionerBean practitioner;
             private String serviceDescription;
-            private VehicleColorBean vehicleColor;
+            private Object vehicleColor;
             private String vehicleModel;
 
             public String getCreatedAt() {
@@ -117,11 +115,11 @@ public class WorkHistoryListGson {
                 this.serviceDescription = serviceDescription;
             }
 
-            public VehicleColorBean getVehicleColor() {
+            public Object getVehicleColor() {
                 return vehicleColor;
             }
 
-            public void setVehicleColor(VehicleColorBean vehicleColor) {
+            public void setVehicleColor(Object vehicleColor) {
                 this.vehicleColor = vehicleColor;
             }
 
@@ -134,10 +132,6 @@ public class WorkHistoryListGson {
             }
 
             public static class PractitionerBean {
-                /**
-                 * name : 游拿
-                 */
-
                 private String name;
 
                 private GenderBean gender;
@@ -159,10 +153,7 @@ public class WorkHistoryListGson {
                     this.gender = gender;
                 }
 
-                public static class GenderBean{
-                    /**
-                     * name : 男
-                     */
+                public static class GenderBean {
                     private String name;
 
                     public String getName() {
@@ -176,9 +167,6 @@ public class WorkHistoryListGson {
             }
 
             public static class VehicleColorBean {
-                /**
-                 * name : 紫色
-                 */
 
                 private String name;
 
@@ -189,15 +177,10 @@ public class WorkHistoryListGson {
                 public void setName(String name) {
                     this.name = name;
                 }
-
             }
-
         }
 
         public static class MaintenancePhotosBean {
-            /**
-             * photoUrl : https://picasso-dev.oss-cn-qingdao.aliyuncs.com/JXApp/20180918152857-c97f8071-5868-4369-9fa9-062543250591.jpg
-             */
 
             private String photoUrl;
 

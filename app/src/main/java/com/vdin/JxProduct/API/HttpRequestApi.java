@@ -44,20 +44,46 @@ public class HttpRequestApi {
         HttpUtil.getRequest(new String(requestUrl), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                callBack.completeBlock(false, "网络请求失败，请检查网路设置");
+
+                // 获取主线程
+                android.os.Handler mainHandle = new android.os.Handler(Looper.getMainLooper());
+                // 回传数据
+                mainHandle.post(() -> {
+                    callBack.completeBlock(false, "网络请求失败，请检查网路设置");
+                });
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+
+                // 获取主线程
+                android.os.Handler mainHandle = new android.os.Handler(Looper.getMainLooper());
+
+                if (response.code() >= 500){
+                    // 回传数据
+                    mainHandle.post(() -> {
+                        // 回传数据
+                        callBack.completeBlock(false, "无法连接服务器");
+                    });
+                    return;
+                }
                 // 获取body数据
                 String jsonString = response.body().string();
                 // 判断body数据是否为空
                 if (!TextUtils.isEmpty(jsonString)) {
                     // 回传数据
-                    callBack.completeBlock(true, jsonString);
+                    mainHandle.post(() -> {
+                        // 回传数据
+                        callBack.completeBlock(true, jsonString);
+                    });
+
                 } else {
                     // 回传数据
-                    callBack.completeBlock(false, "数据解析失败");
+                    mainHandle.post(() -> {
+                        // 回传数据
+                        callBack.completeBlock(false, "数据解析失败");
+                    });
+
                 }
             }
         });
@@ -93,6 +119,17 @@ public class HttpRequestApi {
 
                 // 获取主线程
                 android.os.Handler mainHandle = new android.os.Handler(Looper.getMainLooper());
+
+                if (response.code() >= 500){
+
+                    // 回传数据
+                    mainHandle.post(() -> {
+                        callBack.completeBlock(false, "无法连接服务器");
+                    });
+
+                    return;
+                }
+
                 // 获取body数据
                 String jsonString = response.body().string();
                 // 判断body数据是否为空

@@ -74,6 +74,7 @@ public class WorkApiRequest {
 
     //查询字典表颜色
     public static void queryDicColor(NetWorkCallBack callBack) {
+
         String url = UserInfoService.getInstance().getDictDisplaysUrl() + "?typeList=vehicle_color";
         HttpUtil.getRequest(url, new Callback() {
             @Override

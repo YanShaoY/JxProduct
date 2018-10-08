@@ -20,7 +20,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.vdin.JxProduct.API.MetaDataApiRequest;
 import com.vdin.JxProduct.API.NetWorkCallBack;
 import com.vdin.JxProduct.API.WorkApiRequest;
 import com.vdin.JxProduct.Adapter.WorkRegistAddPicAdapter;
@@ -29,6 +28,7 @@ import com.vdin.JxProduct.Gson.WorkColorListGson;
 import com.vdin.JxProduct.Model.WorkRegistAddPicInfo;
 import com.vdin.JxProduct.OSSService.BitmapUtil;
 import com.vdin.JxProduct.OSSService.FileUtils;
+import com.vdin.JxProduct.OSSService.PermissionUtil;
 import com.vdin.JxProduct.OSSService.PhotoUtils;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Service.IDCardReadService;
@@ -58,8 +58,8 @@ public class InfoRegistActivity extends BaseActivity {
 
     // 本类实例
     public static InfoRegistActivity myActivity;
-    // 上个界面传入的Intent
-    Intent myIntent;
+    // 上个界面传入intent
+    public Intent myIntent;
     // 身份证信息模型
     private IDCardReadService.Identityinfo myIdentityinfo;
     // 定位信息
@@ -83,7 +83,6 @@ public class InfoRegistActivity extends BaseActivity {
     WorkRegistAddPicAdapter addPicAdapter;
     // 最大拍照数量
     public static final int MaxPicSize = 9;
-
 
     @BindView(R.id.license_plate_number_edit)
     EditText licensePlateNumberEdit;
@@ -121,20 +120,20 @@ public class InfoRegistActivity extends BaseActivity {
         // 初始化视图监听
         initViewLisener();
         // 初始化请求颜色列表
-//        initColorsList();
+        initColorsList();
         // 初始化拍照列表视图
         initWorkPicGridView();
 
         // 初始化测试数据
-        initTestData();
+//        initTestData();
     }
 
     /**
      * 导航栏初始化
      */
     private void initNavBar() {
-        fullScreen(this);
-        setFitsSystemWindows(this, true);
+//        fullScreen(this);
+//        setFitsSystemWindows(this, true);
         setHeaderleftTurnBack("");
         setHeaderTitle("新增业务登记");
     }
@@ -148,6 +147,8 @@ public class InfoRegistActivity extends BaseActivity {
         myActivity = this;
         // 上个界面传入的intent
         myIntent = getIntent();
+        // 上个界面传入身份信息
+        myIdentityinfo = (IDCardReadService.Identityinfo) myIntent.getParcelableExtra("identityinfo");
         // 加急按钮选中状态
         urgent_business_button_type = false;
     }
@@ -322,29 +323,7 @@ public class InfoRegistActivity extends BaseActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (LocationUtil.isGpsEnabled() && LocationUtil.isLocationEnabled()) {
-            LocationUtil.register(1000, 200, new LocationUtil.OnLocationChangeListener() {
-                @Override
-                public void getLastKnownLocation(Location location) { currentLocation = location; }
-                @Override
-                public void onLocationChanged(Location location) { currentLocation = location; }
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {}
-            });
-
-        } else {
-            LocationUtil.openGpsSettings();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        LocationUtil.unregister();
-    }
+    /******************************************************** Activity 生命周期 ***********************************************************/
 
     /**
      * 拍摄照片以后的回传接口
@@ -404,6 +383,44 @@ public class InfoRegistActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!PermissionUtil.checkLocationPermission(this)) {
+            return;
+        }
+
+        if (LocationUtil.isGpsEnabled() && LocationUtil.isLocationEnabled()) {
+            LocationUtil.register(1000, 200, new LocationUtil.OnLocationChangeListener() {
+                @Override
+                public void getLastKnownLocation(Location location) {
+                    currentLocation = location;
+                }
+
+                @Override
+                public void onLocationChanged(Location location) {
+                    currentLocation = location;
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                }
+            });
+
+        } else {
+            LocationUtil.openGpsSettings();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!PermissionUtil.checkLocationPermission(this)) {
+            return;
+        }
+        LocationUtil.unregister();
+    }
+
     /**
      * 颜色选择按钮点击响应事件
      */
@@ -412,6 +429,7 @@ public class InfoRegistActivity extends BaseActivity {
         // 判断颜色数组
         if (colorNameArr == null || colorNameArr.size() == 0) {
             showToastWithMessage("正在重新请求颜色列表，请稍后重试！");
+            initColorsList();
             return;
         }
 
@@ -507,12 +525,15 @@ public class InfoRegistActivity extends BaseActivity {
         // 删除默认拍照按钮
         picInfoArrayList.remove(defaultAddPic);
 
-        String scenePhotoPath = myIntent.getStringExtra("scenePhotoPath");
+        String scenePhotoPath = "";
+        if (myIdentityinfo.idtype.equals("1")) {
+            scenePhotoPath = myIdentityinfo.customer_identity_card_portraits;
+        } else {
+            scenePhotoPath = myIdentityinfo.customer_identity_card_photos;
+        }
         String scenePhotoUrl = myIntent.getStringExtra("scenePhotoUrl");
-        myIdentityinfo = (IDCardReadService.Identityinfo) myIntent.getParcelableExtra("identityinfo");
-
         // 若未上传身份证照片 则上传身份证照片
-        if (!StringUtils.isEmpty(scenePhotoPath) && StringUtils.isEmpty(scenePhotoUrl) ) {
+        if (!StringUtils.isEmpty(scenePhotoPath) && StringUtils.isEmpty(scenePhotoUrl)) {
             upLoadIdCardPhoto(scenePhotoPath);
         } else { // 若已上传 则开始上传业务图片
             upLoadPicInfoArrPhoto();
@@ -538,16 +559,22 @@ public class InfoRegistActivity extends BaseActivity {
                 if (index != -1) return;
 
                 if (isSuccess) {
+                    // 获取URL
                     String url = (String) map.get("netUrl");
                     myActivity.myIntent.putExtra("scenePhotoUrl", url);
+                    // 删除本地图片
+                    String path = (String) map.get("filePath");
+                    if (!StringUtils.isEmpty(path)) {
+                        FileUtils.delFileByLocalPath(path);
+                    }
+                    // 上传业务图片
                     upLoadPicInfoArrPhoto();
 
                 } else {
                     closeProgressDialog();
-                    showToastWithMessage("信息提交失败");
                     // 开启提交按钮响应
                     completeButtonId.setClickable(true);
-
+                    showUploadError("身份信息图片上传失败，请重试！！！");
                 }
             }
         });
@@ -565,13 +592,15 @@ public class InfoRegistActivity extends BaseActivity {
         } else {
 
             OssPhotoUpLoadService.upLoadPhoto(picInfoArrayList, (isSuccess, object) -> {
+
                 ArrayList<WorkRegistAddPicInfo> arrayList = (ArrayList<WorkRegistAddPicInfo>) object;
                 picInfoArrayList = arrayList == null ? arrayList : picInfoArrayList;
                 if (!isSuccess) {
                     closeProgressDialog();
-                    showToastWithMessage("信息提交失败");
                     // 开启提交按钮响应
                     completeButtonId.setClickable(true);
+                    showUploadError("业务图片上传失败，请重试！！！");
+
                 } else {
                     dataSubmitted();
                 }
@@ -593,50 +622,56 @@ public class InfoRegistActivity extends BaseActivity {
         // 数据模型
         WorkAddRegistGson gson = new WorkAddRegistGson();
 
-        // 地址
-        gson.setAddress("中国四川省成都市武侯区天府大道中段500号东方希望天祥广场");
-
         // 身份信息
-        String idCardNumber = myIntent.getStringExtra("idCardNumber");
-        String name = myIntent.getStringExtra("name");
-        String phoneNumber = myIntent.getStringExtra("phoneNumber");
         String scenePhotoUrl = myIntent.getStringExtra("scenePhotoUrl");
 
         WorkAddRegistGson.CustomerInfoBean infoBean = new WorkAddRegistGson.CustomerInfoBean();
 
-        infoBean.setBirthDate("2017-06-04");
-        infoBean.setCurrentAddress("中国四川省成都市武侯区天府大道中段500号东方希望天祥广场");
-        infoBean.setEthnicityCode("HA");
-        infoBean.setGenderCode("1");
-        infoBean.setIdNumber(idCardNumber);
+        infoBean.setBirthDate(myIdentityinfo.customer_identity_card_birth_date);
+        infoBean.setCurrentAddress(myIdentityinfo.customer_identity_card_address);
+        infoBean.setEthnicityCode(myIdentityinfo.customer_identity_card_ethnicity_code);
+        infoBean.setGenderCode(myIdentityinfo.customer_identity_card_gender_code);
+        infoBean.setIdNumber(myIdentityinfo.customer_identification_number);
         infoBean.setIdPhotoUrl(scenePhotoUrl);
-        infoBean.setIdentificationType(2);
-        infoBean.setIssuingAuthority("成都市公安局");
-        infoBean.setName(name);
-        infoBean.setPermanentAddress("中国四川省成都市武侯区天府大道中段500号东方希望天祥广场");
-        infoBean.setPhone(phoneNumber);
-        infoBean.setValidityFromDate("2015-05-01");
-        infoBean.setValidityThruDate("2025-05-01");
+        infoBean.setIdentificationType(Integer.parseInt(myIdentityinfo.idtype));
+        infoBean.setIssuingAuthority(myIdentityinfo.customer_identity_card_issuing_authority_name);
+        infoBean.setName(myIdentityinfo.customer_name);
+        infoBean.setPermanentAddress(myIdentityinfo.customer_identity_card_address);
+        infoBean.setPhone(myIdentityinfo.customer_mobile_phone_number);
+        infoBean.setValidityFromDate(myIdentityinfo.customer_identity_card_validity_from_date);
+        infoBean.setValidityThruDate(myIdentityinfo.customer_identity_card_validity_thru_date);
+
         gson.setCustomerInfo(infoBean);
 
-        // 经纬度
-        gson.setLatitude(107);
-        gson.setLongitude(107);
+//        // 地址
+//        gson.setAddress("中国四川省成都市武侯区天府大道中段500号东方希望天祥广场");
+//
+//        // 经纬度
+//        gson.setLatitude(107);
+//        gson.setLongitude(107);
+//
+//        // 内置经纬度封装
+//        WorkAddRegistGson.PositionBean positionBean = new WorkAddRegistGson.PositionBean();
+//        positionBean.setGcjLat(30.000002);
+//        positionBean.setGcjLon(120.000002);
+//        positionBean.setWgsLat(30.000084);
+//        positionBean.setWgsLon(120.000084);
+//        gson.setPosition(positionBean);
+
+
         // 车牌号
         gson.setPlateNumber(licensePlateNumberEdit.getText().toString());
-        // 内置经纬度封装
-        WorkAddRegistGson.PositionBean positionBean = new WorkAddRegistGson.PositionBean();
-        positionBean.setGcjLat(30.000002);
-        positionBean.setGcjLon(120.000002);
-        positionBean.setWgsLat(30.000084);
-        positionBean.setWgsLon(120.000084);
-        gson.setPosition(positionBean);
         // 业务描述
         gson.setServiceDescription(descInfoEdit.getText().toString());
         // 是否加急
         gson.setUrgentBiz(urgent_business_button_type);
         // 颜色code
-        gson.setVehicleColorCode(colorCodeArr.get(selectcolor));
+        if (colorChooseButton.getText().equals("未选择")) {
+            gson.setVehicleColorCode("");
+        } else {
+            gson.setVehicleColorCode(colorCodeArr.get(selectcolor));
+        }
+
         // 发动机号
         gson.setVehicleEngineNumber(faDongJiNumberEdit.getText().toString());
         // 车架号
@@ -663,13 +698,7 @@ public class InfoRegistActivity extends BaseActivity {
                 if (isSuccess) {
                     showAlertDialog();
                 } else {
-                    showToastWithMessage("登记失败");
-                    if (picInfoArrayList.size() < MaxPicSize) {
-                        if (!picInfoArrayList.contains(defaultAddPic)) {
-                            picInfoArrayList.add(defaultAddPic);
-                        }
-                        ;
-                    }
+                    showUploadError("数据提交失败，请重试！！！");
                 }
             });
         });
@@ -708,6 +737,18 @@ public class InfoRegistActivity extends BaseActivity {
         };
 
         dialog.show();
+    }
+
+    /**
+     * 信息提交失败
+     */
+    public void showUploadError(String msg){
+        showToastWithMessage(msg);
+        if (picInfoArrayList.size() < MaxPicSize) {
+            if (!picInfoArrayList.contains(defaultAddPic)) {
+                picInfoArrayList.add(defaultAddPic);
+            }
+        }
     }
 
     /**

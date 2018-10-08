@@ -35,9 +35,8 @@ public class LaunchActivity extends AppCompatActivity {
         // 隐藏状态栏
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        //加载启动界面
+        // 加载启动界面
         setContentView(R.layout.activity_launch);
-//        PermissionUtil.grantNeedPermission(this);
         // 获取用户存储权限
         boolean result = PermissionUtil.checkExternalStorage(this);
         if (result) {

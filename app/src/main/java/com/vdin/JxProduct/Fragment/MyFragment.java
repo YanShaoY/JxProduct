@@ -104,7 +104,7 @@ public class MyFragment extends Fragment {
 
             // 存储用户登录数据
             LaunchUtil.removeLoginFlag(activity);
-            LaunchUtil.removeLoginusername(activity);
+//            LaunchUtil.removeLoginusername(activity);
             LaunchUtil.removePassword(activity);
 
             activity.closeProgressDialog();

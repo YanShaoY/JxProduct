@@ -13,10 +13,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.vdin.JxProduct.API.MetaDataApiRequest;
 import com.vdin.JxProduct.API.NetWorkCallBack;
 import com.vdin.JxProduct.API.WorkApiRequest;
 import com.vdin.JxProduct.Adapter.WorkHistoryListAdapter;
@@ -26,11 +27,9 @@ import com.vdin.JxProduct.Util.DateUtil;
 import com.vdin.JxProduct.Util.HttpUtil;
 import com.vdin.JxProduct.db.HistoryListDB;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -147,7 +146,17 @@ public class HistoryActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // 点击后跳转详情界面
                 Intent intent = new Intent(HistoryActivity.this, HistoryDetailActivity.class);
-                intent.putExtra("id", historyListArr.get(position).getId());
+
+                HistoryListDB listDB = historyListArr.get(position);
+
+                intent.putExtra("id", listDB.getId());
+                intent.putExtra("name", listDB.getName());
+                intent.putExtra("sex", listDB.getSex());
+                intent.putExtra("chepai", listDB.getChepai());
+                intent.putExtra("type", listDB.getType());
+                intent.putExtra("color", listDB.getColor());
+                intent.putExtra("description", listDB.getDescription());
+                intent.putExtra("time", listDB.getTime());
                 startActivity(intent);
             }
         });
@@ -182,7 +191,7 @@ public class HistoryActivity extends BaseActivity {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
 
-                page ++;
+                page++;
                 // 请求历史列表
                 reloadHistoryList(page);
             }
@@ -211,14 +220,14 @@ public class HistoryActivity extends BaseActivity {
 
         // 获取时间
         Date today = DateUtil.getTimesmorning();
-        Date threeDaysAgo = DateUtil.getDateBefore(today,-3);
+        Date threeDaysAgo = DateUtil.getDateBefore(today, -3);
 
         String format = "yyyy-MM-dd";
-        params.put("createAtBegin", DateUtil.getStringByFormat(threeDaysAgo,format));
-        params.put("createAtEnd", DateUtil.getStringByFormat(today,format));
+        params.put("createAtBegin", DateUtil.getStringByFormat(threeDaysAgo, format));
+        params.put("createAtEnd", DateUtil.getStringByFormat(today, format));
 
 
-        if (searchIntent != null){
+        if (searchIntent != null) {
 
             String plateNumber = searchIntent.getStringExtra("plateNumber");
             String name = searchIntent.getStringExtra("name");
@@ -243,7 +252,9 @@ public class HistoryActivity extends BaseActivity {
                 if (isSuccess) {
                     // json字符串
                     String responseStr = (String) object;
-                    WorkHistoryListGson responseModel = new Gson().fromJson(responseStr, WorkHistoryListGson.class);
+
+                    Gson myGson = new GsonBuilder().serializeNulls().create();
+                    WorkHistoryListGson responseModel = myGson.fromJson(responseStr, WorkHistoryListGson.class);
                     if (responseModel.isSuccess()) {
                         // 入库入库
                         saveHistoryList(responseModel);
@@ -259,7 +270,8 @@ public class HistoryActivity extends BaseActivity {
                     historyListArr.addAll(result);
                     if (historyListArr.isEmpty()) {
                         // 若请求失败，且数据库无数据
-                        historyNullText.setText("没加载出来，请检查网络链接");
+                        String textStr = object instanceof String ? (String) object : "没加载出来，请检查网络链接";
+                        historyNullText.setText(textStr);
                         historyNullButton.setText("重新加载");
                         showNullViewWithType(true);
 
@@ -310,7 +322,17 @@ public class HistoryActivity extends BaseActivity {
             HistoryListDB listInfo = new HistoryListDB();
             listInfo.setId(collectionBean.getMotorVehicleMaintenance().getId());
             listInfo.setTime(collectionBean.getMotorVehicleMaintenance().getCreatedAt());
-            listInfo.setColor(collectionBean.getMotorVehicleMaintenance().getVehicleColor().getName());
+
+            // 颜色适配
+            Object vehicleColor = collectionBean.getMotorVehicleMaintenance().getVehicleColor();
+            if (vehicleColor instanceof String) {
+                listInfo.setColor("加急业务");
+            } else if (vehicleColor instanceof LinkedTreeMap) {
+                LinkedTreeMap map = (LinkedTreeMap) vehicleColor;
+                String colorName = (String) map.get("name");
+                listInfo.setColor(colorName);
+            }
+
             listInfo.setName(collectionBean.getMotorVehicleMaintenance().getPractitioner().getName());
             listInfo.setDescription(collectionBean.getMotorVehicleMaintenance().getServiceDescription());
             listInfo.setChepai(collectionBean.getMotorVehicleMaintenance().getPlateNumber());
@@ -323,10 +345,10 @@ public class HistoryActivity extends BaseActivity {
             // DataSource载入
             historyListArr.add(listInfo);
 
-            // 判断数据库时候已有数据
-            if (HistoryListDB.selectItem(collectionBean.getMotorVehicleMaintenance().getId()) == null) {
-                listInfo.save();
-            }
+//            // 判断数据库时候已有数据
+//            if (HistoryListDB.selectItem(collectionBean.getMotorVehicleMaintenance().getId()) == null) {
+//                listInfo.save();
+//            }
 
         }
     }
@@ -370,20 +392,21 @@ public class HistoryActivity extends BaseActivity {
     @OnClick(R.id.history_search_bar)
     public void onHistorySearchBarClicked() {
         // 跳转查询界面
-        Intent intent = new Intent(myActivity,HistorySearchActivity.class);
-        startActivityForResult(intent,1);
+        Intent intent = new Intent(myActivity, HistorySearchActivity.class);
+        startActivityForResult(intent, 1);
     }
 
     /**
      * 搜索界面参数回调
+     *
      * @param requestCode 请求码
      * @param resultCode  返回码
-     * @param data 返回数据
+     * @param data        返回数据
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 1 && requestCode == 1){
+        if (resultCode == 1 && requestCode == 1) {
             // 清空数据
             historyListArr.clear();
             page = 1;

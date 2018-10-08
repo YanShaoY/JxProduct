@@ -69,7 +69,7 @@ public class ActivationActivity extends BaseActivity {
         // 设置下划线
         txtGetPinCode.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         // 加载测试数据
-        initTestData();
+//        initTestData();
 
     }
 

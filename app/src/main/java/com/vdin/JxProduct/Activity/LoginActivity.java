@@ -76,7 +76,7 @@ public class LoginActivity extends BaseActivity {
         etPassword.setText(userPwd);
 
 
-        testData();
+//        testData();
     }
 
     /**
@@ -127,8 +127,8 @@ public class LoginActivity extends BaseActivity {
         }
 
         // 02 用户登录
-//        login();
-        JumpToMainActivity();
+        login();
+//        JumpToMainActivity();
 
     }
 
@@ -154,6 +154,7 @@ public class LoginActivity extends BaseActivity {
         MetaDataApiRequest.login(username, password, new NetWorkCallBack() {
             @Override
             public void completeBlock(boolean isSuccess, Object object) {
+
                 closeProgressDialog();
 
                 if (isSuccess) {
@@ -171,7 +172,8 @@ public class LoginActivity extends BaseActivity {
                     }
 
                 } else {
-                    showToastWithMessage("网络错误，请检查网路设置");
+                    String textStr = object instanceof String ? (String)object : "网络错误，请检查网路设置";
+                    showToastWithMessage(textStr);
                 }
 
             }

@@ -61,7 +61,7 @@ public class GAConfirmDialog extends Dialog {
     //默认显示两个，可配置显示一个按钮, 会隐藏取消按钮
     public GAConfirmDialog isShowSingleButton(boolean isSingle) {
         Button cancelButton = contentView.findViewById(R.id.dialog_bt_cl);
-        cancelButton.setVisibility(isSingle ? View.INVISIBLE : View.VISIBLE);
+        cancelButton.setVisibility(isSingle ? View.GONE : View.VISIBLE);
         return this;
     }
 

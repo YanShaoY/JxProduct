@@ -24,8 +24,8 @@ public class LocationUtil {
     private static final int TWO_MINUTES = 1000 * 60 * 2;
 
     private static OnLocationChangeListener mListener;
-    private static MyLocationListener       myLocationListener;
-    private static LocationManager          mLocationManager;
+    private static MyLocationListener myLocationListener;
+    private static LocationManager mLocationManager;
 
     private LocationUtil() {
         throw new UnsupportedOperationException("u can't instantiate me...");
@@ -95,7 +95,6 @@ public class LocationUtil {
 //
 //        return location;
 //    }
-
 
     /**
      * 判断Gps是否可用
@@ -322,8 +321,7 @@ public class LocationUtil {
         return provider0.equals(provider1);
     }
 
-    private static class MyLocationListener
-            implements LocationListener {
+    private static class MyLocationListener implements LocationListener {
         /**
          * 当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
          *

@@ -112,7 +112,7 @@ public class WorkHistoryListAdapter extends BaseAdapter {
         TextView typeText = (TextView)ViewHolder.get(convertView,R.id.history_list_type);
         typeText.setText(historyArr.get(position).getType());
 
-        // 类型
+        // 时间
         TextView timeText = (TextView)ViewHolder.get(convertView,R.id.history_list_time);
         timeText.setText(historyArr.get(position).getTime());
 

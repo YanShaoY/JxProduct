@@ -2,6 +2,7 @@ package com.vdin.JxProduct.API;
 
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.vdin.JxProduct.Util.HttpUtil;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.Response;
 
 /**
@@ -30,14 +32,17 @@ public class HttpRequestApi {
 
         // 01 拼接参数
         StringBuilder requestUrl = new StringBuilder(url);
-        requestUrl.append("?");
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
-            requestUrl.append(entry.getKey())
-                    .append("=")
-                    .append(entry.getValue() == null ? "" : entry.getValue())
-                    .append("&");
+
+        if (params != null){
+            requestUrl.append("?");
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                requestUrl.append(entry.getKey())
+                        .append("=")
+                        .append(entry.getValue() == null ? "" : entry.getValue())
+                        .append("&");
+            }
+            requestUrl.deleteCharAt(requestUrl.length() - 1);
         }
-        requestUrl.deleteCharAt(requestUrl.length() - 1);
 
         // 02 发起请求
 
@@ -67,6 +72,28 @@ public class HttpRequestApi {
                     });
                     return;
                 }
+
+                MediaType mediaType = response.body().contentType();
+                // 没找到服务器
+                if (response.message().equals("Not Found")){
+
+                    if (mediaType.type().equals("text") && mediaType.subtype().equals("html")){
+                        // 回传数据
+                        mainHandle.post(() -> {
+                            callBack.completeBlock(false, "服务器出错，杀了个后台程序猿祭天，请祭祀完毕后重试");
+                        });
+                        return;
+                    }
+                }
+
+                if (!mediaType.type().equals("application") || !mediaType.subtype().equals("json")){
+                    // 回传数据
+                    mainHandle.post(() -> {
+                        callBack.completeBlock(false, "服务器已挂，返回数据无法解析，准备杀个后台程序猿祭天，请稍后再试一试");
+                    });
+                    return;
+                }
+
                 // 获取body数据
                 String jsonString = response.body().string();
                 // 判断body数据是否为空
@@ -120,13 +147,34 @@ public class HttpRequestApi {
                 // 获取主线程
                 android.os.Handler mainHandle = new android.os.Handler(Looper.getMainLooper());
 
+                // 判断返回code
                 if (response.code() >= 500){
 
                     // 回传数据
                     mainHandle.post(() -> {
                         callBack.completeBlock(false, "无法连接服务器");
                     });
+                    return;
+                }
 
+                MediaType mediaType = response.body().contentType();
+                // 没找到服务器
+                if (response.message().equals("Not Found")){
+
+                    if (mediaType.type().equals("text") && mediaType.subtype().equals("html")){
+                        // 回传数据
+                        mainHandle.post(() -> {
+                            callBack.completeBlock(false, "服务器出错，杀了个后台程序猿祭天，请祭祀完毕后重试");
+                        });
+                        return;
+                    }
+                }
+
+                if (!mediaType.type().equals("application") || !mediaType.subtype().equals("json")){
+                    // 回传数据
+                    mainHandle.post(() -> {
+                        callBack.completeBlock(false, "服务器已挂，返回数据无法解析，准备杀个后台程序猿祭天，请稍后再试一试");
+                    });
                     return;
                 }
 

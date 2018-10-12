@@ -2,11 +2,9 @@ package com.vdin.JxProduct.App;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.support.multidex.MultiDex;
 
 import org.litepal.LitePal;
-import org.litepal.LitePalApplication;
 
 public class MainApplication extends Application{
 

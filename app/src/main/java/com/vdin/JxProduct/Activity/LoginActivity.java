@@ -22,6 +22,7 @@ import com.vdin.JxProduct.Service.UserInfoService;
 import com.vdin.JxProduct.Util.ActivityConllector;
 import com.vdin.JxProduct.Util.HttpUtil;
 import com.vdin.JxProduct.Util.LaunchUtil;
+import com.vdin.JxProduct.Util.StringUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,20 +64,46 @@ public class LoginActivity extends BaseActivity {
         ButterKnife.bind(this);
         setFitsSystemWindows(this, true);
 
-        myActivity = this;
-        txtAlltitle.setText("登录");
-
+        // 导航栏初始化
+        initNavBar();
+        // 参数初始化
+        initParameter();
         // 设置焦点监听 改变输入框背景颜色
         Focused();
+//        testData();
+    }
+
+    /**
+     * 导航栏初始化
+     */
+    private void initNavBar() {
+        fullScreen(this);
+        setFitsSystemWindows(this, true);
+        txtAlltitle.setText("登录");
+    }
+
+    /**
+     * 初始化参数
+     */
+    private void initParameter() {
+
+        myActivity = this;
+
         // 填充用户名
         String userName = LaunchUtil.getLoginUsername(myActivity);
-        etPhone.setText(userName);
+        if (!StringUtils.isEmpty(userName)){
+            etPhone.setText(userName);
+        }
+
+        showKeyBoardWith(etPhone,300);
+
         // 填充密码
         String userPwd = LaunchUtil.getLoginPassword(myActivity);
-        etPassword.setText(userPwd);
+        if (!StringUtils.isEmpty(userName)){
+            etPassword.setText(userPwd);
+            showKeyBoardWith(etPassword,300);
+        }
 
-
-//        testData();
     }
 
     /**
@@ -85,6 +112,9 @@ public class LoginActivity extends BaseActivity {
     private void testData() {
         etPhone.setText("14258585201");
         etPassword.setText("Az123456");
+
+//        14109260009
+//        Qw123456
     }
 
     /**
@@ -107,16 +137,19 @@ public class LoginActivity extends BaseActivity {
         // 01 验证输入
         if (etPhone.getText().toString().length() == 0) {
             showToastWithMessage("请输入用户名");
+            showKeyBoardWith(etPhone);
             return;
         }
 
         if (etPhone.getText().toString().length() < 11) {
             showToastWithMessage("用户名至少11位");
+            showKeyBoardWith(etPhone);
             return;
         }
 
         if (etPassword.getText().toString().length() == 0) {
             showToastWithMessage("请输入密码");
+            showKeyBoardWith(etPassword);
             return;
         }
 
@@ -138,6 +171,9 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.txt_mmcz)
     public void onTxtMmczClicked() {
         Intent resetPwdItent = new Intent(myActivity,ResetPwdActivity.class);
+        if (etPhone.getText().toString().length() >= 11){
+            resetPwdItent.putExtra("userName",etPhone.getText().toString());
+        }
         startActivity(resetPwdItent);
     }
 

@@ -36,6 +36,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @开发者 YanSY
@@ -205,10 +208,10 @@ public class IDCardReadService implements ActiveCallBack {
             appKeyFactory = "厂商五";
 
         } else {
-            // 胡蓉的正式 服务器信息
-            serverinfo = new Serverinfo("id.vdin01.com", 80);
-            // 胡蓉的正式 appkey
-            appKeyFactory = "62e0b6c6c2777368f563a743d8c092e3";
+            // 虎鞭的正式 服务器信息
+            serverinfo = new Serverinfo("id.vdin01.com", 8323);
+            // 虎鞭的正式 appkey
+            appKeyFactory = "4ba7441a8f7181c8c2cfd9e3de12995b";
         }
 
         // 身份证解码服务器列表
@@ -620,12 +623,38 @@ public class IDCardReadService implements ActiveCallBack {
          */
         @Override
         public void handleMessage(Message msg) {
-            // 打印消息
-            Log.d(TAG, "handleMessage: " + msg);
+
             // 获取执行服务
             if (myService.get() != null) {
                 myService.get().handleMessageAction(msg);
             }
+
+//            // 创建线程池 最多支持1个子线程
+//            ExecutorService exec = Executors.newFixedThreadPool(1);
+//            // 线程计数
+//            final CountDownLatch mCountDownLatch = new CountDownLatch(1);
+//
+//            Runnable upTask = new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                    // 获取执行服务
+//                    if (myService.get() != null) {
+//                        myService.get().handleMessageAction(msg);
+//                    }
+//                    mCountDownLatch.countDown();
+//                }
+//            };
+//            exec.submit(upTask);
+//
+//            try {
+//                mCountDownLatch.await();
+//                // 关闭线程池
+//                exec.shutdown();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+
         }
     }
 

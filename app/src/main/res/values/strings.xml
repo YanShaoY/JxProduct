@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">汽车租赁</string>
+    <string name="app_name">机修</string>
     <string name="title_activity_base">BaseActivity</string>
 
     <!--URL接口-->
     <string name="metadata_debug_url">http://192.168.0.234/picasso-wan/practitioner-api/v1/portals.json</string>
-    <string name="metadata_release_url">http://192.168.0.226/picasso-wan/practitioner-api/v1/portals.json</string>
+    <string name="metadata_release_url">http://192.168.0.234/picasso-wan/practitioner-api/v1/portals.json</string>
     <!--<string name="metadata_url">http://192.168.0.226/picasso-wan/practitioner-api/v1/portals.json</string>-->
 
     <!-- OSS上传服务地址-->

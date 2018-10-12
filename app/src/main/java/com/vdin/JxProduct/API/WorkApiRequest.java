@@ -76,22 +76,8 @@ public class WorkApiRequest {
     public static void queryDicColor(NetWorkCallBack callBack) {
 
         String url = UserInfoService.getInstance().getDictDisplaysUrl() + "?typeList=vehicle_color";
-        HttpUtil.getRequest(url, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                callBack.completeBlock(false, e);
-            }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String jsonString = response.body().string();
-                    callBack.completeBlock(true, jsonString);
-                } else {
-                    callBack.completeBlock(false, "请求失败");
-                }
-            }
-        });
+        HttpRequestApi.getRequest(url,null,callBack);
     }
 
     /**

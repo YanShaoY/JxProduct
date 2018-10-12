@@ -79,7 +79,6 @@ dependencies {
     //应用NFC的aar包
     implementation(name: 'zdhtnfcreadcard', ext: 'aar')
 
-
 }
 
 

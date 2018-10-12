@@ -114,7 +114,8 @@ public class ToolUtil {
      * @param event 焦点位置
      * @return 是否隐藏
      */
-    public static void hideKeyboard(MotionEvent event, View view,
+    public static void hideKeyboard(MotionEvent event,
+                                    View view,
                                     Activity activity) {
         try {
             if (view != null && view instanceof EditText) {
@@ -138,6 +139,21 @@ public class ToolUtil {
         }
     }
 
+    /**
+     * 手动隐藏键盘
+     * @param activity 当前界面
+     */
+    public static void hideKeyboard(Activity activity){
+        // 隐藏键盘
+        View view =activity.getCurrentFocus();
+        if (view != null){
+            IBinder token = view.getWindowToken();
+            InputMethodManager inputMethodManager = (InputMethodManager) activity
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(token,
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
 
     /**
      * 车架号判断

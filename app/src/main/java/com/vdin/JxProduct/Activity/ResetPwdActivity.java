@@ -1,11 +1,9 @@
 package com.vdin.JxProduct.Activity;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +19,8 @@ import com.vdin.JxProduct.Gson.BaseResponse;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Util.HttpUtil;
 import com.vdin.JxProduct.Util.StringUtils;
+import com.vdin.JxProduct.Util.ToolUtil;
+import com.vdin.JxProduct.View.GAConfirmDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,7 +66,7 @@ public class ResetPwdActivity extends BaseActivity {
         // 设置下划线
 //        txtGetPinCode.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         // 加载测试数据
-        initTestData();
+//        initTestData();
     }
 
     /**
@@ -84,6 +84,13 @@ public class ResetPwdActivity extends BaseActivity {
     private void initParameter() {
         myActivity = this;
         timer = 60;
+
+        String userName = getIntent().getStringExtra("userName");
+        if (!StringUtils.isEmpty(userName)) {
+            userNameEdit.setText(userName);
+        }
+
+        showKeyBoardWith(userNameEdit,300);
     }
 
     /**
@@ -140,12 +147,16 @@ public class ResetPwdActivity extends BaseActivity {
     @OnClick(R.id.txt_GetPinCode)
     public void onTxtGetPinCodeClicked() {
 
+        // 手动隐藏键盘
+        ToolUtil.hideKeyboard(this);
+
         // 01 取值
         final String userName = userNameEdit.getText().toString();
 
         // 02 弹窗
         if (userName.length() <= 0) {
             showToastWithMessage("请输入用户名");
+            showKeyBoardWith(userNameEdit);
             return;
         }
 
@@ -162,7 +173,7 @@ public class ResetPwdActivity extends BaseActivity {
         startResendTimer();
 
         // 04 请求重发验证码
-        MetaDataApiRequest.sendForgetPwdReCode(userName,(isSuccess, object) -> {
+        MetaDataApiRequest.sendForgetPwdReCode(userName, (isSuccess, object) -> {
 
             if (isSuccess) {
                 JsonObject jsonObject = (JsonObject) new JsonParser().parse((String) object);
@@ -176,6 +187,7 @@ public class ResetPwdActivity extends BaseActivity {
                         msg = "验证码已发送至" + phone_number;
                     }
                     showToastWithMessage(msg);
+//                    showKeyBoardWith(verificationCodeEdit);
 
                 } else {
 
@@ -213,11 +225,13 @@ public class ResetPwdActivity extends BaseActivity {
         // 02 弹窗
         if (userName.length() <= 0) {
             showToastWithMessage("请输入用户名");
+            showKeyBoardWith(userNameEdit);
             return;
         }
 
         if (smsToken.length() <= 0) {
             showToastWithMessage("请输入验证码");
+            showKeyBoardWith(verificationCodeEdit);
             return;
         }
 
@@ -231,7 +245,7 @@ public class ResetPwdActivity extends BaseActivity {
         showProgressDialog("正在验证信息···");
 
         // 04 请求
-        MetaDataApiRequest.checkResetPwdSmsToken(userName,smsToken,(isSuccess, object) -> {
+        MetaDataApiRequest.checkResetPwdSmsToken(userName, smsToken, (isSuccess, object) -> {
 
             // 隐藏加载弹窗
             closeProgressDialog();
@@ -241,11 +255,18 @@ public class ResetPwdActivity extends BaseActivity {
                 BaseResponse response = new Gson().fromJson(jsonObject.toString(), BaseResponse.class);
                 // 验证成功
                 if (response.isSuccess()) {
-                    Intent setPwdIntent = new Intent(myActivity, SetPasswordActivity.class);
-                    setPwdIntent.putExtra("userName", userName);
-                    setPwdIntent.putExtra("smsToken", smsToken);
-                    setPwdIntent.putExtra("type", "reset");
-                    myActivity.startActivity(setPwdIntent);
+
+                    GAConfirmDialog dialog = new GAConfirmDialog(this, GAConfirmDialog.DialogStyle.TIMER);
+                    dialog.showTimer("恭喜你，授权成功！", "即将跳转到密码设置界面", 5, v -> {
+
+                        Intent setPwdIntent = new Intent(myActivity, SetPasswordActivity.class);
+                        setPwdIntent.putExtra("userName", userName);
+                        setPwdIntent.putExtra("smsToken", smsToken);
+                        setPwdIntent.putExtra("type", "reset");
+                        myActivity.startActivity(setPwdIntent);
+
+                    });
+
 
                 } else {
                     String msg = response.getMessage();
@@ -284,7 +305,7 @@ public class ResetPwdActivity extends BaseActivity {
                 txtGetPinCode.setText("获取验证码");
                 timer = 60;
                 txtGetPinCode.setClickable(true);
-            }else {
+            } else {
                 // 继续启动
                 startResendTimer();
                 txtGetPinCode.setClickable(false);

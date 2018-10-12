@@ -2,6 +2,7 @@ package com.vdin.JxProduct.API;
 
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.vdin.JxProduct.App.MainApplication;
@@ -24,6 +25,7 @@ import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.Response;
 
 /**
@@ -50,6 +52,13 @@ public class MetaDataApiRequest {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.code() >= 500){
+                    // 回传数据
+                    callBack.completeBlock(false, "无法连接服务器");
+                    return;
+                }
+
                 // 获取请求到的数据
                 String responseText = response.body().string();
                 if (!TextUtils.isEmpty(responseText)) {
@@ -128,6 +137,27 @@ public class MetaDataApiRequest {
                     return;
                 }
 
+                MediaType mediaType = response.body().contentType();
+                // 没找到服务器
+                if (response.message().equals("Not Found")){
+
+                    if (mediaType.type().equals("text") && mediaType.subtype().equals("html")){
+                        // 回传数据
+                        mainHandle.post(() -> {
+                            callBack.completeBlock(false, "服务器出错，杀了个后台程序猿祭天，请祭祀完毕后重试");
+                        });
+                        return;
+                    }
+                }
+
+                if (!mediaType.type().equals("application") || !mediaType.subtype().equals("json")){
+                    // 回传数据
+                    mainHandle.post(() -> {
+                        callBack.completeBlock(false, "服务器已挂，返回数据无法解析，准备杀个后台程序猿祭天，请稍后再试一试");
+                    });
+                    return;
+                }
+
                 // 获取body数据
                 String responseText = response.body().string();
                 // 判断body数据是否为空
@@ -167,6 +197,27 @@ public class MetaDataApiRequest {
                     mainHandle.post(() -> {
                         // 回传数据
                         callBack.completeBlock(false, "无法连接服务器");
+                    });
+                    return;
+                }
+
+                MediaType mediaType = response.body().contentType();
+                // 没找到服务器
+                if (response.message().equals("Not Found")){
+
+                    if (mediaType.type().equals("text") && mediaType.subtype().equals("html")){
+                        // 回传数据
+                        mainHandle.post(() -> {
+                            callBack.completeBlock(false, "服务器出错，杀了个后台程序猿祭天，请祭祀完毕后重试");
+                        });
+                        return;
+                    }
+                }
+
+                if (!mediaType.type().equals("application") || !mediaType.subtype().equals("json")){
+                    // 回传数据
+                    mainHandle.post(() -> {
+                        callBack.completeBlock(false, "服务器已挂，返回数据无法解析，准备杀个后台程序猿祭天，请稍后再试一试");
                     });
                     return;
                 }

@@ -1,36 +1,34 @@
 package com.vdin.JxProduct.Activity;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.IBinder;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vdin.JxProduct.OSSService.PermissionUtil;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Util.ActivityConllector;
+import com.vdin.JxProduct.Util.StringUtils;
 import com.vdin.JxProduct.Util.ToolUtil;
 
 public class BaseActivity extends AppCompatActivity {
@@ -44,6 +42,7 @@ public class BaseActivity extends AppCompatActivity {
 
     /**
      * 视图创建时调用
+     *
      * @param savedInstanceState
      */
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +60,12 @@ public class BaseActivity extends AppCompatActivity {
         Log.d(this.toString(), "onDestroy");
         ActivityConllector.removeActivity(this);
     }
+
+    /******************************************************** 导航栏设置 ***********************************************************/
+
     /**
      * 设置导航栏标题
+     *
      * @param title 导航栏的标题
      */
     protected void setHeaderTitle(String title) {
@@ -75,6 +78,7 @@ public class BaseActivity extends AppCompatActivity {
 
     /**
      * 设置返回按钮
+     *
      * @param btTitle
      */
     protected void setHeaderleftTurnBack(String btTitle) {
@@ -94,7 +98,7 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * 返回按钮点击响应事件
      */
-    protected void backButtonAction(){
+    protected void backButtonAction() {
         finish();
     }
 
@@ -103,9 +107,11 @@ public class BaseActivity extends AppCompatActivity {
         View view = findViewById(R.id.mainheader_leftimg);
         view.setVisibility(View.VISIBLE);
         if (view instanceof Button) {
-            ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_SP,sp);
+            ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_SP, sp);
         }
     }
+
+    /******************************************************** 弹窗提示 ***********************************************************/
 
     /**
      * 显示底部弹窗
@@ -118,9 +124,9 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // 在主线程中执行
-                if (toast == null){
+                if (toast == null) {
                     toast = Toast.makeText(mContext, message, Toast.LENGTH_SHORT);
-                }else {
+                } else {
                     toast.setText(message);
                 }
                 toast.show();
@@ -168,35 +174,54 @@ public class BaseActivity extends AppCompatActivity {
         });
     }
 
+    public void showAlertDialogWith(String msg){
+//        // 判断当前错误信息
+//        if (!StringUtils.isEmpty(messageStr)) {
+//
+//            if (errorDialog != null && errorDialog.isShowing()) {
+//                errorDialog.setMessage(messageStr);
+//            } else {
+//                errorDialog = new android.app.AlertDialog.Builder(this)
+//                        .setTitle("提示")
+//                        .setMessage(messageStr)
+//                        .setPositiveButton("确定", null)
+//                        .setCancelable(false)
+//                        .show();
+//            }
+//        }
+    }
+
+    /******************************************************** 全屏和状态栏 ***********************************************************/
+
     /**
      * 通过设置全屏，设置状态栏透明
      *
      * @param activity
      */
     public void fullScreen(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                //5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色
-                Window window = activity.getWindow();
-                View decorView = window.getDecorView();
-                //两个 flag 要结合使用，表示让应用的主体内容占用系统状态栏的空间
-                int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-                decorView.setSystemUiVisibility(option);
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(Color.TRANSPARENT);
-                //导航栏颜色也可以正常设置
-//                window.setNavigationBarColor(Color.TRANSPARENT);
-            } else {
-                Window window = activity.getWindow();
-                WindowManager.LayoutParams attributes = window.getAttributes();
-                int flagTranslucentStatus = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-                int flagTranslucentNavigation = WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
-                attributes.flags |= flagTranslucentStatus;
-                attributes.flags |= flagTranslucentNavigation;
-                window.setAttributes(attributes);
-            }
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                //5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色
+//                Window window = activity.getWindow();
+//                View decorView = window.getDecorView();
+//                //两个 flag 要结合使用，表示让应用的主体内容占用系统状态栏的空间
+//                int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+//                decorView.setSystemUiVisibility(option);
+//                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//                window.setStatusBarColor(Color.TRANSPARENT);
+//                //导航栏颜色也可以正常设置
+////                window.setNavigationBarColor(Color.TRANSPARENT);
+//            } else {
+//                Window window = activity.getWindow();
+//                WindowManager.LayoutParams attributes = window.getAttributes();
+//                int flagTranslucentStatus = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+//                int flagTranslucentNavigation = WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
+//                attributes.flags |= flagTranslucentStatus;
+//                attributes.flags |= flagTranslucentNavigation;
+//                window.setAttributes(attributes);
+//            }
+//        }
     }
 
     /**
@@ -206,11 +231,11 @@ public class BaseActivity extends AppCompatActivity {
      * @param value
      */
     public void setFitsSystemWindows(Activity activity, boolean value) {
-        ViewGroup contentFrameLayout = (ViewGroup) activity.findViewById(android.R.id.content);
-        View parentView = contentFrameLayout.getChildAt(0);
-        if (parentView != null && Build.VERSION.SDK_INT >= 14) {
-            parentView.setFitsSystemWindows(value);
-        }
+//        ViewGroup contentFrameLayout = (ViewGroup) activity.findViewById(android.R.id.content);
+//        View parentView = contentFrameLayout.getChildAt(0);
+//        if (parentView != null && Build.VERSION.SDK_INT >= 14) {
+//            parentView.setFitsSystemWindows(value);
+//        }
     }
 
     /**
@@ -242,6 +267,8 @@ public class BaseActivity extends AppCompatActivity {
         contentView.addView(statusBarView, lp);
     }
 
+    /******************************************************** 工具方法 ***********************************************************/
+
     /**
      * dp转px
      *
@@ -249,11 +276,60 @@ public class BaseActivity extends AppCompatActivity {
      * @return
      */
     public int dp2px(float dpValue) {
-        return ToolUtil.dp2px(this,dpValue);
+        return ToolUtil.dp2px(this, dpValue);
+    }
+
+    /**
+     * 手动弹出键盘
+     *
+     * @param editText 需要获取焦点的输入框
+     */
+    public void showKeyBoardWith(EditText editText) {
+        showKeyBoardWith(editText,1000);
+    }
+
+    /**
+     * 手动弹出键盘
+     * @param editText 需要获取焦点的输入框
+     * @param delay 延时
+     */
+    public void showKeyBoardWith(EditText editText,long delay){
+
+        Handler handler = new Handler();
+
+        handler.postDelayed(() -> {
+            if (editText != null) {
+                //设置可获得焦点
+                editText.setFocusable(true);
+                editText.setFocusableInTouchMode(true);
+                //请求获得焦点
+                editText.requestFocus();
+                editText.requestFocusFromTouch();
+                //调用系统输入法
+                InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.showSoftInput(editText, 0);
+            }
+        }, delay);
+    }
+
+    /**
+     * 手动隐藏键盘
+     */
+    public void hideKeyboard(){
+        // 隐藏键盘
+        View view = getCurrentFocus();
+        if (view != null){
+            IBinder token = view.getWindowToken();
+            InputMethodManager inputMethodManager = (InputMethodManager) BaseActivity.this
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(token,
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     /**
      * 点击空白区域，隐藏键盘
+     *
      * @param ev
      * @return
      */
@@ -271,12 +347,90 @@ public class BaseActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
+
     /**
      * 点击手机返回按键
      */
     @Override
     public void onBackPressed() {
         backButtonAction();
+    }
+
+    /******************************************************** 权限申请设置 ***********************************************************/
+
+    private AlertDialog permissionsDialog;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        String checkStr = "";
+        String titleStr = "";
+
+        // 判断系统版本
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            switch (requestCode) {
+
+                case PermissionUtil.REQUEST_CODE_LOCATION_NEED:
+//                    checkStr =  Manifest.permission.ACCESS_COARSE_LOCATION;
+//                    titleStr = "定位";
+                    break;
+
+                default:
+                    checkStr = "";
+                    break;
+            }
+
+
+        }
+
+        // 请求权限字符串不为空 且无此权限
+        if (!StringUtils.isEmpty(checkStr) && !PermissionUtil.checkPermissionsIsSuccess(this, checkStr)) {
+
+            showDialogTipUserGoToAppSettting(titleStr);
+            return;
+        }
+
+        if (permissionsDialog != null && permissionsDialog.isShowing()) {
+            permissionsDialog.dismiss();
+        }
+
+    }
+
+    // 提示用户去应用设置界面手动开启权限
+    public void showDialogTipUserGoToAppSettting(String permissions) {
+
+        if (permissionsDialog != null && permissionsDialog.isShowing()) {
+
+            permissionsDialog.setTitle(permissions + "权限不可用");
+            permissionsDialog.setMessage("请在-应用设置-权限-中，允许使用" + permissions + "权限");
+
+        } else if (permissionsDialog != null && !permissionsDialog.isShowing()) {
+
+            permissionsDialog.setTitle(permissions + "权限不可用");
+            permissionsDialog.setMessage("请在-应用设置-权限-中，允许使用" + permissions + "权限");
+            permissionsDialog.show();
+
+        } else {
+
+            permissionsDialog = new AlertDialog.Builder(this)
+                    .setTitle(permissions + "权限不可用").setMessage("请在-应用设置-权限-中，允许使用" + permissions + "权限")
+                    .setPositiveButton("立即开启", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // 跳转到应用设置界面
+                            goToAppSetting();
+                        }
+                    }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+//                        finish();
+                        }
+                    }).setCancelable(false).show();
+        }
+
+
     }
 
     // 跳转到当前应用的设置界面
@@ -287,6 +441,8 @@ public class BaseActivity extends AppCompatActivity {
         intent.setData(uri);
         startActivityForResult(intent, PermissionUtil.REQUEST_CODE_STORAGE);
     }
+
+
 }
 
 

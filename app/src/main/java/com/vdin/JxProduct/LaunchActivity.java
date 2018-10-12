@@ -3,21 +3,16 @@ package com.vdin.JxProduct;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
-import com.vdin.JxProduct.Activity.BaseActivity;
 import com.vdin.JxProduct.Activity.GuideActivity;
 import com.vdin.JxProduct.Activity.HomeActivity;
 import com.vdin.JxProduct.Activity.MainActivity;
@@ -33,27 +28,45 @@ public class LaunchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 隐藏状态栏
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         // 加载启动界面
         setContentView(R.layout.activity_launch);
         // 获取用户存储权限
-        boolean result = PermissionUtil.checkExternalStorage(this);
+        PermissionUtil.checkExternalStorage(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // 判断用户存储权限
+        boolean result = PermissionUtil.checkPermissionsIsSuccess(this,Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (result) {
             // 跳转
             handlerJump();
             //获取元数据
             MetaDataService.getInstance().initMetadata();
+        }else {
+            if (dialog != null && !dialog.isShowing()) {
+                dialog.show();
+            }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         if (requestCode == PermissionUtil.REQUEST_CODE_STORAGE) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (!PermissionUtil.checkPermissionsIsSuccess(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     // 手动获取权限
                     showDialogTipUserGoToAppSettting();
                     return;
@@ -85,6 +98,7 @@ public class LaunchActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
                     }
+
                 }).setCancelable(false).show();
 
     }

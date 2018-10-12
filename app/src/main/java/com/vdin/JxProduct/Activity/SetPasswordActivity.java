@@ -18,6 +18,7 @@ import com.vdin.JxProduct.API.MetaDataApiRequest;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Util.ActivityConllector;
 import com.vdin.JxProduct.Util.HttpUtil;
+import com.vdin.JxProduct.Util.LaunchUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,6 +83,8 @@ public class SetPasswordActivity extends BaseActivity {
      */
     public void Focused() {
 
+        showKeyBoardWith(pwdSetFirstEdit,300);
+
         pwdSetFirstEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
@@ -127,22 +130,27 @@ public class SetPasswordActivity extends BaseActivity {
         // 02 弹窗
         if (firstPwdStr.length() <= 0) {
             showToastWithMessage("请输入密码");
+            showKeyBoardWith(pwdSetFirstEdit);
             return;
         }
 
         if (secondPwdStr.length() <= 0) {
             showToastWithMessage("请输入确认密码");
+            showKeyBoardWith(pwdSetSecondEdit);
             return;
         }
 
         if (!firstPwdStr.equals(secondPwdStr)){
             showToastWithMessage("两次密码输入不一致");
+            pwdSetFirstEdit.selectAll();
+            pwdSetSecondEdit.selectAll();
             return;
         }
 
         // 判断网络状态
         if (!HttpUtil.isNetworkConnected(this)) {
             showToastWithMessage("无可用网络，请检查网路设置");
+
             return;
         }
 
@@ -159,6 +167,7 @@ public class SetPasswordActivity extends BaseActivity {
 
                     showToastWithMessage("密码设置成功");
                     if (type.equals("register")){
+                        LaunchUtil.setLoginUsername(myActivity, userName);
                         ActivityConllector.GoToLoginActivity();
                     }else {
                         ActivityConllector.GoToLoginActivity();
@@ -187,10 +196,10 @@ public class SetPasswordActivity extends BaseActivity {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        InputMethodManager imms = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        assert imms != null;
-        imms.hideSoftInputFromWindow(pwdSetFirstEdit.getWindowToken(), 0);
-        imms.hideSoftInputFromWindow(pwdSetSecondEdit.getWindowToken(), 0);
+//        InputMethodManager imms = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        assert imms != null;
+//        imms.hideSoftInputFromWindow(pwdSetFirstEdit.getWindowToken(), 0);
+//        imms.hideSoftInputFromWindow(pwdSetSecondEdit.getWindowToken(), 0);
         return super.onTouchEvent(event);
     }
 

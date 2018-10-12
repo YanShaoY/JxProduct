@@ -24,6 +24,8 @@ import com.vdin.JxProduct.Gson.BaseResponse;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Util.HttpUtil;
 import com.vdin.JxProduct.Util.StringUtils;
+import com.vdin.JxProduct.Util.ToolUtil;
+import com.vdin.JxProduct.View.GAConfirmDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -178,11 +180,16 @@ public class ActivationActivity extends BaseActivity {
                 BaseResponse response = new Gson().fromJson(jsonObject.toString(), BaseResponse.class);
                 // 验证成功
                 if (response.isSuccess()) {
-                    Intent setPwdIntent = new Intent(myActivity, SetPasswordActivity.class);
-                    setPwdIntent.putExtra("userName", userName);
-                    setPwdIntent.putExtra("smsToken", smsToken);
-                    setPwdIntent.putExtra("type", "register");
-                    myActivity.startActivity(setPwdIntent);
+                    GAConfirmDialog dialog = new GAConfirmDialog(this, GAConfirmDialog.DialogStyle.TIMER);
+                    dialog.showTimer("恭喜你，账户激活成功！", "点击确定进入下一步密码设置", 5, v -> {
+
+                        Intent setPwdIntent = new Intent(myActivity, SetPasswordActivity.class);
+                        setPwdIntent.putExtra("userName", userName);
+                        setPwdIntent.putExtra("smsToken", smsToken);
+                        setPwdIntent.putExtra("type", "register");
+                        myActivity.startActivity(setPwdIntent);
+
+                    });
 
                 } else {
                     String msg = response.getMessage();
@@ -211,6 +218,9 @@ public class ActivationActivity extends BaseActivity {
     @OnClick(R.id.txt_GetPinCode)
     public void onTxtGetPinCodeClicked() {
 
+        // 手动隐藏键盘
+        ToolUtil.hideKeyboard(this);
+
         // 01 取值
         final String userName = userNameEdit.getText().toString();
 
@@ -229,7 +239,7 @@ public class ActivationActivity extends BaseActivity {
         // 03 计时器
         txtGetPinCode.setClickable(false);
         txtGetPinCode.setTextColor(ContextCompat.getColor(mContext, R.color.txt_timer));
-        txtGetPinCode.setText("重发验证码（" + timer + "s）");
+        txtGetPinCode.setText("重发验证码(" + timer + "s)");
         startResendTimer();
 
         // 04 请求重发验证码
@@ -286,14 +296,14 @@ public class ActivationActivity extends BaseActivity {
             // 减一秒
             timer--;
             // 更新计时显示
-            txtGetPinCode.setText("重发验证码（" + timer + "s）");
+            txtGetPinCode.setText("重发验证码(" + timer + "s)");
             // 判断条件 回复UI
             if (timer <= 0) {
                 txtGetPinCode.setTextColor(ContextCompat.getColor(mContext, R.color.txt_nomal));
                 txtGetPinCode.setText("重发验证码");
                 timer = 60;
                 txtGetPinCode.setClickable(true);
-            }else {
+            } else {
                 // 继续启动
                 startResendTimer();
                 txtGetPinCode.setClickable(false);
@@ -303,7 +313,7 @@ public class ActivationActivity extends BaseActivity {
     }
 
     /**
-     * 回复重发验证码初始状态
+     * 恢复重发验证码初始状态
      */
     private void restoreResendTimer() {
         timer = 0;

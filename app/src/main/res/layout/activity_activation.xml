@@ -32,13 +32,13 @@
         <!-- 用户名-->
         <RelativeLayout
             android:id="@+id/activation_user_name"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             android:background="@mipmap/input_normal">
 
             <EditText
                 android:id="@+id/user_name_edit"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:background="#00000000"
@@ -49,6 +49,28 @@
                 android:textColor="#ffffff"
                 android:textColorHint="#949ea8"
                 android:textSize="14sp" />
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="5dp"
+                android:layout_toLeftOf="@id/txt_GetPinCode"
+                android:layout_toStartOf="@id/txt_GetPinCode"
+                android:background="#DCDCDC" />
+
+            <TextView
+                android:id="@+id/txt_GetPinCode"
+                android:layout_width="95dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="重发验证码"
+                android:textColor="#48D1CC"
+                android:textSize="12sp" />
 
         </RelativeLayout>
 
@@ -98,20 +120,20 @@
     <!-- 底部提示布局-->
 
     <!-- 重发验证码-->
-    <TextView
-        android:id="@+id/txt_GetPinCode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="38dp"
-        android:layout_marginRight="38dp"
-        android:layout_marginTop="20dp"
-        android:clickable="false"
-        android:text="重发验证码"
-        android:textColor="@color/txt_nomal"
-        android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activation_button_next" />
+    <!--<TextView-->
+        <!--android:id="@+id/txt_GetPinCode"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="38dp"-->
+        <!--android:layout_marginRight="38dp"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:clickable="false"-->
+        <!--android:text="重发验证码"-->
+        <!--android:textColor="@color/txt_nomal"-->
+        <!--android:textSize="14sp"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/activation_button_next" />-->
 
     <!-- underLine01-->
     <!--<View-->
@@ -136,7 +158,7 @@
         android:textSize="12sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_GetPinCode" />
+        app:layout_constraintTop_toBottomOf="@+id/activation_button_next" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.vdin.JxProduct.Activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,14 +10,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.vdin.JxProduct.OSSService.BitmapUtil;
 import com.vdin.JxProduct.OSSService.FileUtils;
+import com.vdin.JxProduct.OSSService.PermissionUtil;
 import com.vdin.JxProduct.OSSService.PhotoUtils;
 import com.vdin.JxProduct.R;
 import com.vdin.JxProduct.Service.IDCardReadService;
@@ -68,6 +70,8 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
         initNavBar();
         // 参数初始化
         initParameter();
+        // 请求获取手机信息权限
+        PermissionUtil.checkPhone(this);
         // 测试数据
 //        testData();
 
@@ -114,7 +118,7 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
         Drawable drawable = cardImageButton.getBackground();
         if ((drawable instanceof BitmapDrawable)) {
             showToastWithMessage("NFC读取无需拍摄现场照片~");
-        }else {
+        } else {
             // 拍摄照片
             PhotoUtils.takePicture(this);
         }
@@ -166,7 +170,7 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
         // 存储电话号码
         myIdentityinfo.customer_mobile_phone_number = cardPhoneEdit.getText().toString().trim();
         // 若为NFC读取 切已经拍照
-        if (myIdentityinfo.idtype.equals("1") && !StringUtils.isEmpty(scenePhotoUrl)){
+        if (myIdentityinfo.idtype.equals("1") && !StringUtils.isEmpty(scenePhotoUrl)) {
             // 删除本地路径的原图
             FileUtils.delFileByLocalPath(scenePhotoUrl);
         }
@@ -240,6 +244,11 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         myService.startToReadIdCard();
@@ -255,6 +264,11 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         myService.onNewIntent(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     /**
@@ -273,57 +287,87 @@ public class IdCardReadActivity extends BaseActivity implements IDCardReadServic
 
     /******************************************************** IDCardReadService.IdCardServiceBlock ***********************************************************/
 
+    private AlertDialog errorDialog;
+
     // 错误回调
     @Override
     public void onFailure(IDCardReadService service, int readMode, int errorCode) {
 
-        Log.d("IDCardReadService", "onFailure: " + service.toString() + "readMode ：" + readMode + " errorCode :" + errorCode + "\n");
+        android.os.Handler mainHandle = new android.os.Handler(Looper.getMainLooper());
+        mainHandle.post(() -> {
 
-        if (errorCode == 102) {
-            showNFCDialogForTag(1);
-            return;
-        } else if (errorCode == 103) {
-            showNFCDialogForTag(2);
-            return;
-        }
+            if (errorCode == 102) {
+                showNFCDialogForTag(1);
+                return;
+            } else if (errorCode == 103) {
+                showNFCDialogForTag(2);
+                return;
+            }
 
-        if (errorCode == 10100 || errorCode == 10141) {
-            new AlertDialog.Builder(this)
-                    .setTitle("提示").setMessage("读卡失败！")
-                    .setPositiveButton("确定", null).show();
-            return;
-        }
+            if (!PermissionUtil.checkPermissionsIsSuccess(this, Manifest.permission.READ_PHONE_STATE) && errorCode == 10141) {
+                showDialogTipUserGoToAppSettting("手机信息");
+                return;
+            }
 
-        if (errorCode == 10102) {
-            new AlertDialog.Builder(this)
-                    .setTitle("提示").setMessage("接收数据超时！")
-                    .setPositiveButton("确定", null).show();
-            return;
-        }
+            String messageStr = "";
+            switch (errorCode) {
 
-        if (errorCode == 10142) {
-            new AlertDialog.Builder(this)
-                    .setTitle("提示").setMessage("网络连接错误,请重试！")
-                    .setPositiveButton("确定", null).show();
-            return;
-        }
-        if (errorCode == 10143) {
-            new AlertDialog.Builder(this)
-                    .setTitle("提示").setMessage("服务器忙！")
-                    .setPositiveButton("确定", null).show();
-            return;
-        }
+                case 10100:
+                case 10141:
+                    messageStr = "读卡失败！";
+                    break;
+
+                case 10102:
+                    messageStr = "接收数据超时！";
+                    break;
+
+                case 10142:
+                    messageStr = "网络连接错误,请重试！";
+                    break;
+
+                case 10143:
+                    messageStr = "服务器忙！";
+                    break;
+
+                default:
+                    messageStr = "";
+                    break;
+
+            }
+
+            // 判断当前错误信息
+            if (!StringUtils.isEmpty(messageStr)) {
+
+                if (errorDialog != null && errorDialog.isShowing()) {
+                    errorDialog.setMessage(messageStr);
+                } else {
+                    errorDialog = new AlertDialog.Builder(this)
+                            .setTitle("提示")
+                            .setMessage(messageStr)
+                            .setPositiveButton("确定", null)
+                            .setCancelable(false)
+                            .show();
+                }
+            }
+
+
+        });
 
     }
 
     // 成功回调
     @Override
     public void completeBlock(IDCardReadService service, int readMode, IDCardReadService.Identityinfo info) {
-        Log.d("IDCardReadService", "onFailure: " + service.toString() + "readMode ：" + readMode + " info :" + info + "\n");
-        // 存储NFC读取数据
-        myIdentityinfo = info;
-        // 刷新页面数据显示
-        reloadNFCDataToView();
+
+        android.os.Handler mainHandle = new android.os.Handler(Looper.getMainLooper());
+        mainHandle.post(() -> {
+
+            // 存储NFC读取数据
+            myIdentityinfo = info;
+            // 刷新页面数据显示
+            reloadNFCDataToView();
+        });
+
     }
 
     /**

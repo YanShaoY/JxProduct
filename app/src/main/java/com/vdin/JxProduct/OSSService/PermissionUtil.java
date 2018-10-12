@@ -84,10 +84,12 @@ public class PermissionUtil {
         if (i3 != PackageManager.PERMISSION_GRANTED) {
             permissionList.add(Manifest.permission.RECORD_AUDIO);
         }
+
         if (permissionList.size() == 0) {
             // 已授权
             return true;
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // 如果是6.0及以后,则申请权限
             try {
@@ -164,19 +166,27 @@ public class PermissionUtil {
      * 定位权限
      */
     public static boolean checkLocationPermission(Activity activity) {
+        // 初始化权限列表
         List<String> permissionList = new ArrayList<String>();
+
+        // 获取网络定位权限
         int i = ContextCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
         if (i != PackageManager.PERMISSION_GRANTED) {
             permissionList.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         }
+
+        // 获取GPS定位权限
         int i1 = ContextCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION);
         if (i1 != PackageManager.PERMISSION_GRANTED) {
             permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
         }
+
+        // 已授权
         if (permissionList.size() == 0) {
-            // 已授权
             return true;
         }
+
+        // 版本判断 请求权限
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // 如果是6.0及以后,则申请权限
             try {
@@ -324,4 +334,17 @@ public class PermissionUtil {
         return isSuccess;
     }
 
+    /**
+     * 检查对应权限是否授权成功
+     * @param activity
+     * @param permissionsStr
+     * @return
+     */
+    public static boolean checkPermissionsIsSuccess(Activity activity, String permissionsStr){
+
+        if (ContextCompat.checkSelfPermission(activity, permissionsStr) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        return false;
+    }
 }

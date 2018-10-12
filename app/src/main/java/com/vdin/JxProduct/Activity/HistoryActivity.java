@@ -333,7 +333,7 @@ public class HistoryActivity extends BaseActivity {
                 listInfo.setColor(colorName);
             }
 
-            listInfo.setName(collectionBean.getMotorVehicleMaintenance().getPractitioner().getName());
+            listInfo.setName(collectionBean.getMotorVehicleMaintenance().getName());
             listInfo.setDescription(collectionBean.getMotorVehicleMaintenance().getServiceDescription());
             listInfo.setChepai(collectionBean.getMotorVehicleMaintenance().getPlateNumber());
             listInfo.setSex(collectionBean.getMotorVehicleMaintenance().getPractitioner().getGender().getName());

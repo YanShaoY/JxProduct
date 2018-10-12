@@ -67,7 +67,7 @@ public class MetaDataService {
         FileOutputStream fileOutputStream = null;
         BufferedWriter writer = null;
         try {
-            fileOutputStream = MainApplication.getContext().openFileOutput("metaData", Context.MODE_PRIVATE);
+            fileOutputStream = MainApplication.getContext().openFileOutput("metaData.out", Context.MODE_PRIVATE);
             writer = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
             writer.write(metaDataStr);
             return true;
@@ -98,7 +98,7 @@ public class MetaDataService {
         StringBuilder content = new StringBuilder();
 
         try {
-            inputStream = MainApplication.getContext().openFileInput("metaData");
+            inputStream = MainApplication.getContext().openFileInput("metaData.out");
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String line = "";
             while ((line = reader.readLine()) != null) {

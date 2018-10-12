@@ -1,11 +1,12 @@
 package com.vdin.JxProduct.Gson;
 
+import com.google.gson.JsonObject;
 import com.vdin.JxProduct.Util.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseResponse<T> {
+public class BaseResponse {
 
 
     /**
@@ -20,7 +21,7 @@ public class BaseResponse<T> {
 
     private String message;
     private boolean success;
-    private List<T> collection;
+    private List<JsonObject> collection;
 
 
     public boolean isNull() {
@@ -30,14 +31,14 @@ public class BaseResponse<T> {
         return true;
     }
 
-    public T getBean() {
+    public JsonObject getBean() {
         if (!ListUtils.isEmpty(collection)) {
             return collection.get(0);
         }
         return null;
     }
 
-    public List<T> getList() {
+    public List<JsonObject> getList() {
         if (!ListUtils.isEmpty(collection)) {
             return collection;
         }
@@ -61,11 +62,11 @@ public class BaseResponse<T> {
         this.success = success;
     }
 
-    public List<T> getCollection() {
+    public List<JsonObject> getCollection() {
         return collection;
     }
 
-    public void setCollection(List<T> collection) {
+    public void setCollection(List<JsonObject> collection) {
         this.collection = collection;
     }
 }

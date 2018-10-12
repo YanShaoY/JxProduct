@@ -1,8 +1,10 @@
 package com.vdin.JxProduct.Activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,10 +22,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.baidu.location.BDLocation;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vdin.JxProduct.API.NetWorkCallBack;
 import com.vdin.JxProduct.API.WorkApiRequest;
 import com.vdin.JxProduct.Adapter.WorkRegistAddPicAdapter;
+import com.vdin.JxProduct.Gson.BaseResponse;
 import com.vdin.JxProduct.Gson.WorkAddRegistGson;
 import com.vdin.JxProduct.Gson.WorkColorListGson;
 import com.vdin.JxProduct.Model.WorkRegistAddPicInfo;
@@ -35,8 +41,9 @@ import com.vdin.JxProduct.Service.IDCardReadService;
 import com.vdin.JxProduct.Service.OssPhotoUpLoadService;
 import com.vdin.JxProduct.Util.ActivityConllector;
 import com.vdin.JxProduct.Util.AllCapTransformationMethod;
+import com.vdin.JxProduct.Util.BaiduLocationUtil;
+import com.vdin.JxProduct.Util.CoordinateUtils;
 import com.vdin.JxProduct.Util.HttpUtil;
-import com.vdin.JxProduct.Util.LocationUtil;
 import com.vdin.JxProduct.Util.StringUtils;
 import com.vdin.JxProduct.Util.ToolUtil;
 import com.vdin.JxProduct.View.ConfirmDialog;
@@ -63,7 +70,7 @@ public class InfoRegistActivity extends BaseActivity {
     // 身份证信息模型
     private IDCardReadService.Identityinfo myIdentityinfo;
     // 定位信息
-    private Location currentLocation = null;
+    private BDLocation currentLocation = null;
 
     // 选择颜色name列表
     ArrayList<String> colorNameArr;
@@ -125,7 +132,7 @@ public class InfoRegistActivity extends BaseActivity {
         initWorkPicGridView();
 
         // 初始化测试数据
-//        initTestData();
+//        testData();
     }
 
     /**
@@ -156,7 +163,7 @@ public class InfoRegistActivity extends BaseActivity {
     /**
      * 初始化默认数据 测试用
      */
-    private void initTestData() {
+    private void testData() {
 
         licensePlateNumberEdit.setText("川A-88888");
         cheJiaNumberEdit.setText("WDDHF5EB0AA071919");
@@ -384,42 +391,26 @@ public class InfoRegistActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (!PermissionUtil.checkLocationPermission(this)) {
-            return;
-        }
-
-        if (LocationUtil.isGpsEnabled() && LocationUtil.isLocationEnabled()) {
-            LocationUtil.register(1000, 200, new LocationUtil.OnLocationChangeListener() {
-                @Override
-                public void getLastKnownLocation(Location location) {
-                    currentLocation = location;
-                }
-
-                @Override
-                public void onLocationChanged(Location location) {
-                    currentLocation = location;
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-                }
-            });
-
-        } else {
-            LocationUtil.openGpsSettings();
-        }
+    protected void onStart() {
+        super.onStart();
+        // 请求定位
+        PermissionUtil.checkLocationPermission(this);
+        // 开始请求定位
+        BaiduLocationUtil.getInstance().requestLocation((isSuccess, location) -> {
+            if (isSuccess){
+                currentLocation = location;
+            }
+        });
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        if (!PermissionUtil.checkLocationPermission(this)) {
-            return;
-        }
-        LocationUtil.unregister();
+    protected void onStop() {
+        super.onStop();
+        // 手动结束定位
+        BaiduLocationUtil.getInstance().stopLocation();
     }
+
+    /******************************************************** 按钮响应事件 ***********************************************************/
 
     /**
      * 颜色选择按钮点击响应事件
@@ -518,6 +509,17 @@ public class InfoRegistActivity extends BaseActivity {
             }
         }
 
+        // 判断是否获取到定位
+        if (currentLocation == null || StringUtils.isEmpty(currentLocation.getAddrStr())){
+
+            if (!PermissionUtil.checkPermissionsIsSuccess(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                showDialogTipUserGoToAppSettting("定位");
+            }else {
+                showToastWithMessage("尚未获取到定位信息，请检查定位设置或稍后重试");
+            }
+            return;
+        }
+
         // 关闭提交按钮响应
         completeButtonId.setClickable(false);
         // 显示加载弹窗
@@ -540,6 +542,8 @@ public class InfoRegistActivity extends BaseActivity {
         }
 
     }
+
+    /******************************************************** 数据上传 ***********************************************************/
 
     /**
      * 上传身份证照片
@@ -643,20 +647,28 @@ public class InfoRegistActivity extends BaseActivity {
 
         gson.setCustomerInfo(infoBean);
 
-//        // 地址
-//        gson.setAddress("中国四川省成都市武侯区天府大道中段500号东方希望天祥广场");
-//
-//        // 经纬度
-//        gson.setLatitude(107);
-//        gson.setLongitude(107);
-//
-//        // 内置经纬度封装
-//        WorkAddRegistGson.PositionBean positionBean = new WorkAddRegistGson.PositionBean();
-//        positionBean.setGcjLat(30.000002);
-//        positionBean.setGcjLon(120.000002);
-//        positionBean.setWgsLat(30.000084);
-//        positionBean.setWgsLon(120.000084);
-//        gson.setPosition(positionBean);
+        // 地址
+        gson.setAddress(currentLocation.getAddrStr());
+
+        // GCJ02 坐标
+        double gcjLat = currentLocation.getLatitude();
+        double gcjLon = currentLocation.getLongitude();
+        // WGS84 坐标
+        double[] wgsLocation = CoordinateUtils.gcj02ToWGS84(gcjLon,gcjLat);
+        double wgsLat = wgsLocation[1];
+        double wgsLon = wgsLocation[0];
+
+                // 经纬度
+        gson.setLatitude(gcjLat);
+        gson.setLongitude(gcjLon);
+
+        // 内置经纬度封装
+        WorkAddRegistGson.PositionBean positionBean = new WorkAddRegistGson.PositionBean();
+        positionBean.setGcjLat(gcjLat);
+        positionBean.setGcjLon(gcjLon);
+        positionBean.setWgsLat(wgsLat);
+        positionBean.setWgsLon(wgsLon);
+        gson.setPosition(positionBean);
 
 
         // 车牌号
@@ -691,12 +703,28 @@ public class InfoRegistActivity extends BaseActivity {
 
         // 数据提交
         WorkApiRequest.addRegister(gson, (isSuccess, object) -> {
+
             runOnUiThread(() -> {
+
                 closeProgressDialog();
                 // 开启提交按钮响应
                 completeButtonId.setClickable(true);
+
                 if (isSuccess) {
-                    showAlertDialog();
+                    // 数据解析
+                    String responseStr = (String) object;
+                    Gson myGson = new GsonBuilder().serializeNulls().create();
+                    BaseResponse response = myGson.fromJson(responseStr,BaseResponse.class);
+
+                    // 验证成功
+                    if (response.isSuccess()){
+                        showAlertDialog();
+                    }else {
+                        String msg = response.getMessage();
+                        msg = msg.length() > 0 ? msg : "网络错误";
+                        showUploadError(msg);
+                    }
+
                 } else {
                     showUploadError("数据提交失败，请重试！！！");
                 }
@@ -704,6 +732,8 @@ public class InfoRegistActivity extends BaseActivity {
         });
 
     }
+
+    /******************************************************** 弹窗提示 ***********************************************************/
 
     /**
      * 显示成功弹窗
@@ -742,7 +772,7 @@ public class InfoRegistActivity extends BaseActivity {
     /**
      * 信息提交失败
      */
-    public void showUploadError(String msg){
+    public void showUploadError(String msg) {
         showToastWithMessage(msg);
         if (picInfoArrayList.size() < MaxPicSize) {
             if (!picInfoArrayList.contains(defaultAddPic)) {
@@ -750,6 +780,8 @@ public class InfoRegistActivity extends BaseActivity {
             }
         }
     }
+
+    /******************************************************** 数据初始化 ***********************************************************/
 
     /**
      * 初始化数据显示 在提交成功或失败以后
